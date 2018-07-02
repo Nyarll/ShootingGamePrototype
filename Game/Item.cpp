@@ -1,7 +1,10 @@
+#include <math.h>
 #include "Item.h"
+#include "Player.h"
 #include "Defines.h"
 
 Item item[ITEM_NUM];
+double item_rad[ITEM_NUM];
 // グラフィックハンドル / 0:スコア 1:パワーアップ 2:ボム 3:残機
 static HGRP gh[4], ghs[4];
 
@@ -19,6 +22,8 @@ void InitItem(void)
 		item[i].flag = FALSE;
 		item[i].pos = { 0,0 };
 		item[i].rad = 0;
+
+		item_rad[i] = 0;
 	}
 
 	gh[0] = LoadGraph("Resources/Textures/item_s.png");
@@ -43,21 +48,30 @@ void MoveItem(void)
 			item[i].rad = 0.04 * item[i].count;
 			item[i].count++;
 
-			
-			if (!item[i].fall_flag)
+			if (GetPlayerPosY() < (GAME_SCREEN_CENTER_Y / 2))
 			{
-				tempy = item[i].pos.y;
-				item[i].pos.y -= (item[i].pos.y - item[i].top_y) + 1;
+				item_rad[i] = atan2(item[i].pos.y - GetPlayerPosY(), item[i].pos.x - GetPlayerPosX());
 
-				if (((item[i].pos.y - item[i].top_y) + 1) == 0)
-				{
-					item[i].fall_flag = TRUE;
-				}
-				item[i].top_y = tempy;
+				item[i].pos.x -= cos(item_rad[i]) * 5;
+				item[i].pos.y -= sin(item_rad[i]) * 5;
 			}
 			else
 			{
-				item[i].pos.y++;
+				if (!item[i].fall_flag)
+				{
+					tempy = item[i].pos.y;
+					item[i].pos.y -= (item[i].pos.y - item[i].top_y) + 1;
+
+					if (((item[i].pos.y - item[i].top_y) + 1) == 0)
+					{
+						item[i].fall_flag = TRUE;
+					}
+					item[i].top_y = tempy;
+				}
+				else
+				{
+					item[i].pos.y++;
+				}
 			}
 		}
 
