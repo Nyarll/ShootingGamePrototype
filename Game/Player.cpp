@@ -175,7 +175,7 @@ void MovePlayerShot(void)
 	if (!dead_flag)
 	{
 		// Ｚキーが押されて, ６フレームに一発発射する
-		if ((GetInputKeyData(KEY_INPUT_Z)) && (GetGameCount() % 6 == 0))
+		if ((GetInputKeyData(KEY_INPUT_Z)) && (GetGameCount() % 4 == 0))
 		{
 			for (i = 0; i < PLAYER_SHOT_NUM; i++)
 			{

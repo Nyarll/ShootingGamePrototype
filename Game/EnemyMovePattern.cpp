@@ -62,7 +62,7 @@ void EnemyMovePattern2(int i)
 		enemy[i].y += 2;
 	}
 }
-// 上から出てきて画面右に消える
+// 上から出てきて画面左に消える
 void EnemyMovePattern3(int i)
 {
 	if (enemy_angle[i] == 0)
@@ -75,6 +75,29 @@ void EnemyMovePattern3(int i)
 		if (enemy[i].stop_time < GetGameCount())
 		{
 			enemy[i].x += cos(DEG_TO_RAD(enemy_angle[i])) * 2;
+			enemy[i].y += sin(DEG_TO_RAD(enemy_angle[i])) * 2;
+
+			enemy_angle[i] += 0.5;
+		}
+		else
+		{
+			enemy[i].y += 2;
+		}
+	}
+}
+// 上から出てきて画面右上に消える
+void EnemyMovePattern4(int i)
+{
+	if (enemy_angle[i] == 0)
+	{
+		enemy_angle[i] = 90;
+	}
+
+	if (enemy[i].in_time < GetGameCount())
+	{
+		if (enemy[i].stop_time < GetGameCount())
+		{
+			enemy[i].x -= cos(DEG_TO_RAD(enemy_angle[i])) * 2;
 			enemy[i].y += sin(DEG_TO_RAD(enemy_angle[i])) * 2;
 
 			enemy_angle[i] += 0.5;

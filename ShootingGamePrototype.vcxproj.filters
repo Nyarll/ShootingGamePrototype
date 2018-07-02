@@ -54,6 +54,12 @@
     <Filter Include="ゲーム\MyLibrary">
       <UniqueIdentifier>{156dfa60-9315-40ca-997e-e8c1c753fa42}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ゲーム\PlayScene\Boss">
+      <UniqueIdentifier>{b0cad4d1-f549-431d-a596-452168d17476}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ゲーム\PlayScene\Graze">
+      <UniqueIdentifier>{bcabcb8c-34c0-4690-8b6d-48516cf81092}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <!-- ソースファイル -->
   <ItemGroup>

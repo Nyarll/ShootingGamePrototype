@@ -4,6 +4,19 @@
 #include "Defines.h"
 
 double state[ENEMY_SHOT_NUM];
+// 0 - 31 ビーム
+// 32 - 63 かまぼこ
+// 64 - 95 丸１
+// 96 - 127 丸２
+// 128 - 159 クリスタル
+// 160 - 191 クナイ
+// 192 - 223 カード
+// 224 - 255 弾丸
+// 256 - 287 米粒１
+// 288 - 319 米粒２
+// 320 - 351 星型
+// 352 - 384 ナゲット
+HGRP enemy_shot_graph[384];
 
 // エネミーの弾
 void InitEnemyShot(void)
@@ -27,8 +40,8 @@ void InitEnemyShot(void)
 		enemy_shot[i].rad = 0;
 
 		shotwait_count[i] = 0;
-
 	}
+	LoadDivGraph("Resources/Textures/bullet_11_11_32_12.png", 384, 32, 12, 11, 11, enemy_shot_graph);
 }
 void SetEnemyShot(int index)
 {
@@ -282,7 +295,8 @@ void DrawEnemyShot(int o)
 			switch (enemy[o].shot_type)
 			{
 			case 0:
-				DrawCircle(enemy_shot[i].base.pos.x, enemy_shot[i].base.pos.y, enemy_shot[i].r, COLOR_PURPLE, TRUE);
+				//DrawCircle(enemy_shot[i].base.pos.x, enemy_shot[i].base.pos.y, enemy_shot[i].r, COLOR_PURPLE, TRUE);
+				DrawRotaGraph(enemy_shot[i].base.pos.x, enemy_shot[i].base.pos.y, 1.4, 0, enemy_shot[i].base.sprite.texture, TRUE);
 				break;
 
 
@@ -291,14 +305,13 @@ void DrawEnemyShot(int o)
 	}
 }
 
-void SetEnemyShotGraph(int i)
+void SetEnemyShotGraph(int e_index, int j)
 {
-	int j;
-
-	switch (enemy[i].shot_type)
+	switch (enemy[e_index].shot_type)
 	{
-	case 0:
-		//enemy_shot
+	case 0:	// クリスタル型
+		enemy_shot[j].base.sprite.texture = enemy_shot_graph[322];
+		break;
 	}
 }
 
@@ -322,6 +335,7 @@ void EnemyShotPattern0(int i)
 				enemy_shot[j].base.speed.y = shot_speed_data[j];
 				enemy_shot[j].base.pos.x = enemy[i].x;
 				enemy_shot[j].base.pos.y = enemy[i].y;
+				SetEnemyShotGraph(i, j);
 				break;
 			}
 		}
@@ -351,6 +365,8 @@ void EnemyShotPattern1(int i)
 
 				enemy_shot[j].base.pos.x = enemy[i].x;
 				enemy_shot[j].base.pos.y = enemy[i].y;
+
+				SetEnemyShotGraph(i, j);
 				break;
 			}
 		}
@@ -384,6 +400,7 @@ void EnemyShotPattern2(int i)
 
 					enemy_shot[j].base.vel.x = 1 * cos(enemy_shot[j].rad);
 					enemy_shot[j].base.vel.y = 1 * sin(enemy_shot[j].rad);
+					SetEnemyShotGraph(i, j);
 				}
 				else
 				{
@@ -393,6 +410,7 @@ void EnemyShotPattern2(int i)
 
 					enemy_shot[j].base.vel.x = 1 * cos(enemy_shot[j].rad);
 					enemy_shot[j].base.vel.y = 1 * sin(enemy_shot[j].rad);
+					SetEnemyShotGraph(i, j);
 					break;
 				}
 			}
@@ -428,6 +446,8 @@ void EnemyShotPattern3(int i)
 
 				enemy_shot[j].base.vel.x = 1 * cos(enemy_shot[j].rad);
 				enemy_shot[j].base.vel.y = 1 * sin(enemy_shot[j].rad);
+
+				SetEnemyShotGraph(i, j);
 
 				ang += 45;
 				sum++;
@@ -469,6 +489,8 @@ void EnemyShotPattern4(int i)
 				enemy_shot[j].base.vel.x = 1 * cos(enemy_shot[j].rad);
 				enemy_shot[j].base.vel.y = 1 * sin(enemy_shot[j].rad);
 
+				SetEnemyShotGraph(i, j);
+
 				ang += 5.0;
 				sum++;
 
@@ -508,6 +530,8 @@ void EnemyShotPattern5(int i)
 
 				enemy_shot[j].base.vel.x = 1 * cos(enemy_shot[j].rad);
 				enemy_shot[j].base.vel.y = 1 * sin(enemy_shot[j].rad);
+
+				SetEnemyShotGraph(i, j);
 
 				ang += 10.0;
 				sum++;
@@ -549,6 +573,8 @@ void EnemyShotPattern6(int i)
 				enemy_shot[j].base.vel.x = 1 * cos(enemy_shot[j].rad);
 				enemy_shot[j].base.vel.y = 1 * sin(enemy_shot[j].rad);
 
+				SetEnemyShotGraph(i, j);
+
 				ang += 30.0;
 				sum++;
 
@@ -588,6 +614,8 @@ void EnemyShotPattern7(int i)
 
 				enemy_shot[j].base.vel.x = 1 * cos(enemy_shot[j].rad);
 				enemy_shot[j].base.vel.y = 1 * sin(enemy_shot[j].rad);
+
+				SetEnemyShotGraph(i, j);
 
 				ang += 45.0;
 				sum++;
@@ -640,6 +668,8 @@ void EnemyShotPattern8(int i)
 
 				enemy_shot[j].base.pos.x = enemy[i].x + r * cos(DEG_TO_RAD(angle_route1));
 				enemy_shot[j].base.pos.y = enemy[i].y + r * sin(DEG_TO_RAD(angle_route1));
+
+				SetEnemyShotGraph(i, j);
 
 				angle_shot += 30;
 				sum++;
@@ -723,6 +753,8 @@ void EnemyShotPattern9(int i)
 				enemy_shot[j].base.pos.x = enemy[i].x + r * cos(DEG_TO_RAD(angle1));
 				enemy_shot[j].base.pos.y = enemy[i].y + r * sin(DEG_TO_RAD(angle1));
 
+				SetEnemyShotGraph(i, j);
+
 				angle1 += 15;
 
 				break;
@@ -746,6 +778,8 @@ void EnemyShotPattern9(int i)
 
 				enemy_shot[j].base.pos.x = enemy[i].x + r * cos(DEG_TO_RAD(angle2));
 				enemy_shot[j].base.pos.y = enemy[i].y + r * sin(DEG_TO_RAD(angle2));
+
+				SetEnemyShotGraph(i, j);
 
 				angle2 += 15;
 
@@ -793,6 +827,8 @@ void EnemyShotPattern10(int i)
 				enemy_shot[j].base.pos.x = enemy[i].x + r * cos(DEG_TO_RAD(angle1));
 				enemy_shot[j].base.pos.y = enemy[i].y + r * sin(DEG_TO_RAD(angle1));
 
+				SetEnemyShotGraph(i, j);
+
 				angle1 += 15;
 
 				break;
@@ -817,6 +853,8 @@ void EnemyShotPattern10(int i)
 				enemy_shot[j].base.pos.x = enemy[i].x + r * cos(DEG_TO_RAD(angle2));
 				enemy_shot[j].base.pos.y = enemy[i].y + r * sin(DEG_TO_RAD(angle2));
 
+				SetEnemyShotGraph(i, j);
+
 				angle2 += 15;
 
 				break;
@@ -840,6 +878,8 @@ void EnemyShotPattern10(int i)
 
 				enemy_shot[j].base.pos.x = enemy[i].x + r * cos(DEG_TO_RAD(angle3));
 				enemy_shot[j].base.pos.y = enemy[i].y + r * sin(DEG_TO_RAD(angle3));
+
+				SetEnemyShotGraph(i, j);
 
 				angle3 += 15;
 
@@ -896,6 +936,8 @@ void EnemyShotPattern11(int i)
 				enemy_shot[j].base.pos.x = enemy[i].x + r * cos(DEG_TO_RAD(angle1));
 				enemy_shot[j].base.pos.y = enemy[i].y + r * sin(DEG_TO_RAD(angle1));
 
+				SetEnemyShotGraph(i, j);
+
 				angle1 += 15;
 
 				break;
@@ -919,6 +961,8 @@ void EnemyShotPattern11(int i)
 
 				enemy_shot[j].base.pos.x = enemy[i].x + r * cos(DEG_TO_RAD(angle2));
 				enemy_shot[j].base.pos.y = enemy[i].y + r * sin(DEG_TO_RAD(angle2));
+
+				SetEnemyShotGraph(i, j);
 
 				angle2 += 15;
 
@@ -944,6 +988,8 @@ void EnemyShotPattern11(int i)
 				enemy_shot[j].base.pos.x = enemy[i].x + r * cos(DEG_TO_RAD(angle3));
 				enemy_shot[j].base.pos.y = enemy[i].y + r * sin(DEG_TO_RAD(angle3));
 
+				SetEnemyShotGraph(i, j);
+
 				angle3 += 15;
 
 				break;
@@ -967,6 +1013,8 @@ void EnemyShotPattern11(int i)
 
 				enemy_shot[j].base.pos.x = enemy[i].x + r * cos(DEG_TO_RAD(angle4));
 				enemy_shot[j].base.pos.y = enemy[i].y + r * sin(DEG_TO_RAD(angle4));
+
+				SetEnemyShotGraph(i, j);
 
 				angle4 += 15;
 
@@ -995,6 +1043,8 @@ void EnemyShotPattern12(int i)
 				enemy_shot[j].base.pos.x = enemy[i].x;
 				enemy_shot[j].base.pos.y = enemy[i].y;
 				enemy_shot[j].base.vel.y = 1.0;
+
+				SetEnemyShotGraph(i, j);
 
 				switch (sum)
 				{
@@ -1080,6 +1130,8 @@ void EnemyShotPattern13(int i)
 
 				state[j] = -1;
 
+				SetEnemyShotGraph(i, j);
+
 				angle += 6;
 				sum++;
 
@@ -1112,6 +1164,8 @@ void EnemyShotPattern13(int i)
 				enemy_shot[j].center = { (double)enemy[i].x , (double)enemy[i].y };
 
 				state[j] = 1;
+
+				SetEnemyShotGraph(i, j);
 
 				angle += 6;
 				sum++;
@@ -1170,6 +1224,8 @@ void EnemyShotPattern14(int i, int num)
 					enemy_shot[j].base.pos.x = enemy[i].x + r * cos(DEG_TO_RAD(angle[m]));
 					enemy_shot[j].base.pos.y = enemy[i].y + r * sin(DEG_TO_RAD(angle[m]));
 
+					SetEnemyShotGraph(i, j);
+
 					angle[m] += 15;
 
 					break;
@@ -1207,6 +1263,8 @@ void EnemyShotPattern15(int i)
 				enemy_shot[j].base.pos.x = enemy[i].x;
 				enemy_shot[j].base.pos.y = enemy[i].y;
 				
+				SetEnemyShotGraph(i, j);
+
 				num++;
 
 				if (num % 2)

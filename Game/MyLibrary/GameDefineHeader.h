@@ -40,7 +40,7 @@
 
 #define PLAYER_SIZE 64
 #define PLAYER_SPEED 6
-#define PLAYER_SHOT_NUM 40
+#define PLAYER_SHOT_NUM 128
 #define PLAYER_SHOT_SIZE 5
 
 #define ENEMY_SIZE 10
