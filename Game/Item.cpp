@@ -1,12 +1,9 @@
 #include "Item.h"
 #include "Defines.h"
 
-#define ITEM_NUM 128
-#define ITEM_TYPE_NUM 2
-
 Item item[ITEM_NUM];
-// グラフィックハンドル
-static HGRP gh[2], ghs[2];
+// グラフィックハンドル / 0:スコア 1:パワーアップ 2:ボム 3:残機
+static HGRP gh[4], ghs[4];
 
 
 void InitItem(void)
@@ -26,8 +23,12 @@ void InitItem(void)
 
 	gh[0] = LoadGraph("Resources/Textures/item_s.png");
 	gh[1] = LoadGraph("Resources/Textures/item_p.png");
+	gh[2] = LoadGraph("Resources/Textures/item_b.png");
+	gh[3] = LoadGraph("Resources/Textures/item_h.png");
 	ghs[0] = LoadGraph("Resources/Textures/items_s.png");
 	ghs[1] = LoadGraph("Resources/Textures/items_p.png");
+	ghs[2] = LoadGraph("Resources/Textures/items_b.png");
+	ghs[3] = LoadGraph("Resources/Textures/items_h.png");
 
 }
 void MoveItem(void)
@@ -42,7 +43,7 @@ void MoveItem(void)
 			item[i].rad = 0.04 * item[i].count;
 			item[i].count++;
 
-			/*
+			
 			if (!item[i].fall_flag)
 			{
 				tempy = item[i].pos.y;
@@ -54,7 +55,7 @@ void MoveItem(void)
 				}
 				item[i].top_y = tempy;
 			}
-			else*/
+			else
 			{
 				item[i].pos.y++;
 			}
@@ -88,6 +89,11 @@ void ItemDelete(int i)
 	item[i].fall_flag = FALSE;
 }
 
+int GetItemNum(void)
+{
+	return ITEM_NUM;
+}
+
 void SetItemFlag(int type, int x, int y)
 {
 	int i;
@@ -98,7 +104,7 @@ void SetItemFlag(int type, int x, int y)
 		{
 			item[i].pos.x = x;
 			item[i].pos.y = y;
-			item[i].top_y = y;
+			item[i].top_y = y + 10;
 			item[i].type = type;
 			item[i].flag = TRUE;
 			break;

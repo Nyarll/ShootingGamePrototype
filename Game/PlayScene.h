@@ -13,6 +13,7 @@ void FinalPlay(void);
 // “–‚½‚è”»’è
 void PlayerShot_EnemyCollision(void);
 void EnemyShot_PlayerCollision(void);
+void Player_ItemCollision(void);
 
 void DrawGameObject(void);
 

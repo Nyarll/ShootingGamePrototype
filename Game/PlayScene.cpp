@@ -51,6 +51,7 @@ void UpdatePlay(void)
 	
 	PlayerShot_EnemyCollision();
 	EnemyShot_PlayerCollision();
+	Player_ItemCollision();
 
 	MoveItem();
 	UpdateScore();
@@ -176,6 +177,22 @@ void EnemyShot_PlayerCollision(void)
 		if (CircleCollision(enemy_shot[i].r, PLAYER_R, enemy_shot[i].base.pos.x, GetPlayerPosX(), enemy_shot[i].base.pos.y, GetPlayerPosY()))
 		{
 			SetPlayerDeadFlag();
+		}
+	}
+}
+void Player_ItemCollision(void)
+{
+	int i;
+
+	for (i = 0; i < GetItemNum(); i++)
+	{
+		if (item[i].flag)
+		{
+			if (CircleCollision(PLAYER_R, ITEM_R, GetPlayerPosX(), item[i].pos.x, GetPlayerPosY(), item[i].pos.y))
+			{
+				ItemDelete(i);
+				SetItemGetScore(1);
+			}
 		}
 	}
 }
