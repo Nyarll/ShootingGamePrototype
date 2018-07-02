@@ -3,6 +3,8 @@
 
 static GameObject player;			// プレイヤーオブジェクト
 static HGRP player_tex[2];			// プレイヤーのグラフィックハンドル
+static HGRP player_collision;
+static DegRad player_angle[2];
 
 static Shot player_shot[PLAYER_SHOT_NUM];	// プレイヤーの弾オブジェクト
 static int shot_power;		// ショットの強さ
@@ -28,12 +30,30 @@ void InitPlayer(void)
 
 	dead_flag = FALSE;
 	dead_count = 0;
-
+	player_collision = LoadGraph("Resources/Textures/atari.png");
 	LoadDivGraph("Resources/Textures/player.png", 2, 2, 1, 64, 64, player_tex);
+
+	player_angle[0].deg = 0;
+	player_angle[1].deg = 360;
 
 }
 void MovePlayer(void)
 {
+
+	player_angle[0].deg++;
+	player_angle[1].deg--;
+
+	if (player_angle[0].deg == 360)
+	{
+		player_angle[0].deg = 0;
+	}
+	if (player_angle[1].deg == 0)
+	{
+		player_angle[1].deg = 360;
+	}
+
+	player_angle[0].rad = DEG_TO_RAD(player_angle[0].deg);
+	player_angle[1].rad = DEG_TO_RAD(player_angle[1].deg);
 
 	if (!dead_flag)
 	{
@@ -148,6 +168,9 @@ void DrawPlayer(void)
 		}
 		player_count++;
 	}
+	DrawRotaGraph(player.pos.x, player.pos.y, 1.0, player_angle[0].rad, player_collision, TRUE);
+	DrawRotaGraph(player.pos.x, player.pos.y, 1.0, player_angle[1].rad, player_collision, TRUE);
+
 }
 
 // プレイヤーの弾

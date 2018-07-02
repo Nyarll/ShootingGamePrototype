@@ -18,14 +18,39 @@ void UpdateScore(void)
 }
 void DrawScore(void)
 {
+	// ハイスコア
 	num = sprintf(buf, "%d", score);
-
-	for (int i = 0; i < num; ++i) {
-
-		DrawGraph(SCORE_X + 20 + i * 19, 95, score_gh[(buf[i] - '0')], TRUE);
-
+	for (int i = 0; i < num; ++i)
+	{
+		DrawGraph(SCORE_X + 20 + i * 19, 35, score_gh[(buf[i] - '0')], TRUE);
 	}
 
+	// スコア
+	num = sprintf(buf, "%d", score);
+	for (int i = 0; i < num; ++i) 
+	{
+		DrawGraph(SCORE_X + 20 + i * 19, 95, score_gh[(buf[i] - '0')], TRUE);
+	}
+
+	// グレイズ
+	num = sprintf(buf, "%d", score);
+	for (int i = 0; i < num; ++i)
+	{
+		DrawGraph(SCORE_X + 20 + i * 19, 155, score_gh[(buf[i] - '0')], TRUE);
+	}
+
+	// 残機
+	num = sprintf(buf, "%d", score);
+	for (int i = 0; i < num; ++i)
+	{
+		DrawGraph(SCORE_X + 20 + i * 19, 215, score_gh[(buf[i] - '0')], TRUE);
+	}
+
+	num = sprintf(buf, "%d", score);
+	for (int i = 0; i < num; ++i)
+	{
+		DrawGraph(SCORE_X + 20 + i * 19, 275, score_gh[(buf[i] - '0')], TRUE);
+	}
 }
 
 void SetEnemyKillScore(void)
