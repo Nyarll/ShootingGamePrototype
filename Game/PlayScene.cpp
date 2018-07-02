@@ -160,7 +160,7 @@ void PlayerShot_EnemyCollision(void)
 					{
 						SetEnemyDeadFlag(j);
 						SetEnemyKillScore();
-						SetItemFlag(enemy[j].item, &enemy[j].x, &enemy[j].y);
+						SetItemFlag(enemy[j].item, enemy[j].x, enemy[j].y);
 					}
 
 				}

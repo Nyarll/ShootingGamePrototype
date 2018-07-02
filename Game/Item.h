@@ -19,4 +19,4 @@ void DrawItem(void);
 
 void ItemDelete(int i);
 
-void SetItemFlag(int type, int *x, int *y);
+void SetItemFlag(int type, int x, int y);

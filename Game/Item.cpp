@@ -27,7 +27,7 @@ void InitItem(void)
 	gh[0] = LoadGraph("Resources/Textures/item_s.png");
 	gh[1] = LoadGraph("Resources/Textures/item_p.png");
 	ghs[0] = LoadGraph("Resources/Textures/items_s.png");
-	ghs[1] = LoadGraph("Resources/Textures/item_p.png");
+	ghs[1] = LoadGraph("Resources/Textures/items_p.png");
 
 }
 void MoveItem(void)
@@ -42,6 +42,7 @@ void MoveItem(void)
 			item[i].rad = 0.04 * item[i].count;
 			item[i].count++;
 
+			/*
 			if (!item[i].fall_flag)
 			{
 				tempy = item[i].pos.y;
@@ -53,7 +54,7 @@ void MoveItem(void)
 				}
 				item[i].top_y = tempy;
 			}
-			else
+			else*/
 			{
 				item[i].pos.y++;
 			}
@@ -87,7 +88,7 @@ void ItemDelete(int i)
 	item[i].fall_flag = FALSE;
 }
 
-void SetItemFlag(int type, int *x, int *y)
+void SetItemFlag(int type, int x, int y)
 {
 	int i;
 
@@ -95,9 +96,10 @@ void SetItemFlag(int type, int *x, int *y)
 	{
 		if (item[i].flag == FALSE)	// 出現中じゃないアイテムを探す
 		{
-			item[i].pos.x = *x;
-			item[i].pos.y = *y;
-			item[i].top_y = *y - 10;
+			item[i].pos.x = x;
+			item[i].pos.y = y;
+			item[i].top_y = y;
+			item[i].type = type;
 			item[i].flag = TRUE;
 			break;
 		}
