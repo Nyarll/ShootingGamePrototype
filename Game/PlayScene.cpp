@@ -2,6 +2,8 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Back.h"
+#include "Score.h"
+#include "Item.h"
 #include "Defines.h"
 
 #define PLAYER_R (PLAYER_SIZE / 12)
@@ -26,8 +28,9 @@ void InitPlay(void)
 	InitBack("Resources/Textures/Stage1_back.png");
 	InitPlayer();		// プレイヤーの初期化
 	InitPlayerShot();	// プレイヤーの弾の初期化
+	InitScore();
+	InitItem();
 }
-
 void UpdatePlay(void)
 {
 	int i;
@@ -49,16 +52,19 @@ void UpdatePlay(void)
 	PlayerShot_EnemyCollision();
 	EnemyShot_PlayerCollision();
 
+	MoveItem();
+	UpdateScore();
+
 	UseDebug();
 
 	StageClearCheck();
 
 }
-
 void RenderPlay(void)
 {
 	int i;
 	SetDrawBright(255, 255, 255);
+
 	DrawGameObject();
 
 	for (i = 0; i < GetEnemyNum(); i++)
@@ -67,7 +73,10 @@ void RenderPlay(void)
 	}
 	DrawBox(GAME_SCREEN_RIGHT, 0, SCREEN_RIGHT, SCREEN_BOTTOM, COLOR_BLACK, TRUE);
 	DrawBox(GAME_SCREEN_RIGHT, 0, GAME_SCREEN_RIGHT + 10, GAME_SCREEN_BOTTOM, COLOR_WHITE, TRUE);
-	DrawDebug();
+
+	DrawScore();
+
+	//DrawDebug();
 }
 
 void FinalPlay(void)
@@ -80,6 +89,7 @@ void DrawGameObject(void)
 {
 	DrawBack();
 	DrawPlayerShot();
+	DrawItem();
 	DrawPlayer();
 	DrawEnemy();
 }
@@ -149,6 +159,8 @@ void PlayerShot_EnemyCollision(void)
 					if (CircleCollision(PLAYER_SHOT_SIZE, ENEMY_SIZE, GetPlayerShotPosX(i), GetEnemyPosX(j), GetPlayerShotPosY(i), GetEnemyPosY(j)))
 					{
 						SetEnemyDeadFlag(j);
+						SetEnemyKillScore();
+						SetItemFlag(enemy[j].item, &enemy[j].x, &enemy[j].y);
 					}
 
 				}
@@ -157,7 +169,7 @@ void PlayerShot_EnemyCollision(void)
 }
 void EnemyShot_PlayerCollision(void)
 {
-	int i, j;
+	int i;
 
 	for (i = 0; i < ENEMY_SHOT_NUM; i++)
 	{

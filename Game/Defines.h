@@ -9,3 +9,5 @@ int GetGameCount(void);
 
 BOOL GetInputKeyData(unsigned char in);
 BOOL GetInputKeyOldData(unsigned char in);
+
+BOOL OutCheck(int x, int y);// ‰æ–ÊŠO‚Éo‚½‚©‚Ç‚¤‚©	

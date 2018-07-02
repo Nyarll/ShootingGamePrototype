@@ -1,3 +1,5 @@
+#pragma warning (disable:4244)
+
 #include <math.h>
 #include "Enemy.h"
 #include "Player.h"

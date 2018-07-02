@@ -150,17 +150,6 @@ void FileStreamEnemy(const TCHAR *file_name)
 		}
 	}
 }
-BOOL OutCheck(int x, int y)
-{
-	if ((x < SCREEN_LEFT - 50) || (x > GAME_SCREEN_RIGHT + 50) || (y < SCREEN_TOP - 50) || (y > GAME_SCREEN_BOTTOM + 50))
-	{
-		return TRUE;
-	}
-	else
-	{
-		return FALSE;
-	}
-}
 void SetEnemyNum(int stage)
 {
 	switch (stage)

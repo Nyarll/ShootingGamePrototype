@@ -20,7 +20,6 @@ extern Vector2D enemy_vel[256];
 
 void InitEnemy(int stage);		// エネミーの初期化
 void FileStreamEnemy(const TCHAR *file_name);	// エネミーデータの読み込み
-BOOL OutCheck(int x, int y);// 画面外に出たかどうか	
 void SetEnemyNum(int stage);	// エネミーの数の設定
 void MoveEnemy(void);		// エネミーの移動
 void DrawEnemy(void);		// エネミーの描画
