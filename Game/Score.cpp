@@ -1,4 +1,5 @@
 #include "Score.h"
+#include "Player.h"
 
 #define SCORE_X (SCREEN_CENTER_X + 140)
 
@@ -40,13 +41,14 @@ void DrawScore(void)
 	}
 
 	// 残機
-	num = sprintf(buf, "%d", score);
+	num = sprintf(buf, "%d", player_life);
 	for (int i = 0; i < num; ++i)
 	{
 		DrawGraph(SCORE_X + 20 + i * 19, 215, score_gh[(buf[i] - '0')], TRUE);
 	}
 
-	num = sprintf(buf, "%d", score);
+	// 残ボム
+	num = sprintf(buf, "%d", player_bom);
 	for (int i = 0; i < num; ++i)
 	{
 		DrawGraph(SCORE_X + 20 + i * 19, 275, score_gh[(buf[i] - '0')], TRUE);
@@ -57,7 +59,24 @@ void SetEnemyKillScore(void)
 {
 	score += 20;
 }
-void SetItemGetScore(int index = 1)
+void SetItemGet(int index = 1)
 {
-	score += 10 * index;
+	switch (index)
+	{
+	case 0:	// スコアアイテム
+		score += 10;
+		break;
+
+	case 1:	// パワーアップ
+		break;
+
+	case 2:	// ボム
+		player_bom += 1;
+		break;
+
+	case 3:	// 残機
+		player_life += 1;
+		break;
+
+	}
 }

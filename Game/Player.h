@@ -1,5 +1,8 @@
 #pragma once
 
+extern LIFE player_life;
+extern BOMB player_bom;
+
 void InitPlayer(void);		// プレイヤーの初期化
 void MovePlayer(void);		// プレイヤーの移動
 void DrawPlayer(void);		// プレイヤーの描画
@@ -7,6 +10,8 @@ void DrawPlayer(void);		// プレイヤーの描画
 void InitPlayerShot(void);	// プレイヤーの弾の初期化
 void MovePlayerShot(void);	// プレイヤーの弾の移動
 void DrawPlayerShot(void);	// プレイヤーの弾の描画
+
+void PlayBom(void);
 
 double GetPlayerPosX(void);
 double GetPlayerPosY(void);

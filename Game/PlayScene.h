@@ -3,6 +3,7 @@
 // ステージクリアの処理
 void InitStage(void);		// クリアしたなら初期化
 void StageClearCheck(void);	// クリアしたかどうか
+void GameOverCheck(void);	// 残機がなくなったかどうか
 
 // プレイ中の処理
 void InitPlay(void);

@@ -53,6 +53,7 @@
 #define ENEMY_NUM2 (5)
 
 typedef int LIFE;
+typedef int BOMB;
 
 typedef enum
 {

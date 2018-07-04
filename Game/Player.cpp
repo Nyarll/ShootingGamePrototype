@@ -12,7 +12,8 @@ static DegRad player_angle[2];
 static Shot player_shot[PLAYER_SHOT_NUM];	// プレイヤーの弾オブジェクト
 static int shot_power;		// ショットの強さ
 
-static LIFE player_life;
+LIFE player_life;
+BOMB player_bom;
 
 static int dead_count;
 
@@ -28,6 +29,7 @@ void InitPlayer(void)
 	player.vel.x = PLAYER_SPEED;	player.vel.y = PLAYER_SPEED;
 
 	player_life = 3;
+	player_bom = 3;
 
 	shot_power = 1;
 
@@ -417,6 +419,17 @@ void DrawPlayerShot(void)
 		{
 			DrawCircle(player_shot[i].base.pos.x, player_shot[i].base.pos.y,
 				PLAYER_SHOT_SIZE, COLOR_BLACK, TRUE);
+		}
+	}
+}
+
+void PlayBom(void)
+{
+	if ((GetInputKeyData(KEY_INPUT_X)) && (!GetInputKeyOldData(KEY_INPUT_X)))
+	{
+		if (player_bom > 0)
+		{
+			player_bom -= 1;
 		}
 	}
 }

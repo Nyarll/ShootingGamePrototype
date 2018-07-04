@@ -5,4 +5,4 @@ void UpdateScore(void);
 void DrawScore(void);
 
 void SetEnemyKillScore(void);
-void SetItemGetScore(int index);
+void SetItemGet(int index);

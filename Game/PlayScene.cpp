@@ -6,12 +6,14 @@
 #include "Item.h"
 #include "Defines.h"
 
-#define PLAYER_R (PLAYER_SIZE / 12)
+#define PLAYER_R (PLAYER_SIZE / 14)
 
 static int game_stage;
 static BOOL stage_clear_flag;
 
 static HGRP game_logo;
+
+static BOOL debug_flag;
 
 
 void InitPlay(void)
@@ -22,6 +24,8 @@ void InitPlay(void)
 	}
 
 	stage_clear_flag = TRUE;
+
+	debug_flag = FALSE;
 
 	game_logo = LoadGraph("Resources/Textures/sample.png");
 
@@ -40,6 +44,7 @@ void UpdatePlay(void)
 	MovePlayer();
 	MoveBack();
 	MovePlayerShot();
+	PlayBom();
 	MoveEnemy();
 
 	for (i = 0; i < GetEnemyNum(); i++)
@@ -58,7 +63,10 @@ void UpdatePlay(void)
 
 	UseDebug();
 
+	GameOverCheck();
 	StageClearCheck();
+
+	UpdateKeyOld();
 
 }
 void RenderPlay(void)
@@ -77,7 +85,7 @@ void RenderPlay(void)
 
 	DrawScore();
 
-	//DrawDebug();
+	DrawDebug();
 }
 
 void FinalPlay(void)
@@ -143,6 +151,14 @@ void StageClearCheck(void)
 		break;
 	}
 }
+void GameOverCheck(void)
+{
+	if (player_life < 0)
+	{
+		MSG("Žc‹@‚ª–³‚­‚È‚è‚Ü‚µ‚½");
+		EXIT;
+	}
+}
 
 void PlayerShot_EnemyCollision(void)
 {
@@ -179,6 +195,9 @@ void EnemyShot_PlayerCollision(void)
 			if (CircleCollision(enemy_shot[i].r, PLAYER_R, enemy_shot[i].base.pos.x, GetPlayerPosX(), enemy_shot[i].base.pos.y, GetPlayerPosY()))
 			{
 				SetPlayerDeadFlag();
+				player_life -= 1;
+				player_bom = 3;
+				break;
 			}
 		}
 	}
@@ -194,7 +213,7 @@ void Player_ItemCollision(void)
 			if (CircleCollision(PLAYER_R, ITEM_R, GetPlayerPosX(), item[i].pos.x, GetPlayerPosY(), item[i].pos.y))
 			{
 				ItemDelete(i);
-				SetItemGetScore(1);
+				SetItemGet(item[i].type);
 			}
 		}
 	}
@@ -214,20 +233,21 @@ void UseDebug(void)
 	{
 		SetShotPower3();
 	}
+
+	if ((GetInputKeyData(KEY_INPUT_D)) && (!GetInputKeyOldData(KEY_INPUT_D)))
+	{
+		if (debug_flag)
+		{
+			debug_flag = FALSE;
+		}
+		else
+		{
+			debug_flag = TRUE;
+		}
+	}
 }
 void DrawDebug(void)
 {
-	static BOOL debug_flag = TRUE;
-
-	if ((GetInputKeyData(KEY_INPUT_F6)) && (!GetInputKeyOldData(KEY_INPUT_F6)) && (debug_flag == FALSE))
-	{
-		debug_flag = TRUE;
-	}
-	else if ((GetInputKeyData(KEY_INPUT_F6)) && (!GetInputKeyOldData(KEY_INPUT_F6)) && (debug_flag == TRUE))
-	{
-		debug_flag = FALSE;
-	}
-
 	if (debug_flag)
 	{
 
