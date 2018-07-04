@@ -2,7 +2,10 @@
 #include "Defines.h"
 
 static GameObject player;			// プレイヤーオブジェクト
-static HGRP player_tex[2];			// プレイヤーのグラフィックハンドル
+static HGRP player_tex[12];			// プレイヤーのグラフィックハンドル
+
+static BOOL right_move_flag, left_move_flag;
+
 static HGRP player_collision;
 static DegRad player_angle[2];
 
@@ -30,11 +33,15 @@ void InitPlayer(void)
 
 	dead_flag = FALSE;
 	dead_count = 0;
+
 	player_collision = LoadGraph("Resources/Textures/atari.png");
-	LoadDivGraph("Resources/Textures/player.png", 2, 2, 1, 64, 64, player_tex);
+
+	LoadDivGraph("Resources/Textures/huto.png", 12, 4, 3, 48, 48, player_tex);
 
 	player_angle[0].deg = 0;
 	player_angle[1].deg = 360;
+
+	right_move_flag = FALSE, left_move_flag = FALSE;
 
 }
 void MovePlayer(void)
@@ -90,11 +97,21 @@ void MovePlayer(void)
 		if (GetInputKeyData(KEY_INPUT_LEFT))
 		{
 			player.pos.x -= player.vel.x * player.speed.x;
+			left_move_flag = TRUE;
+		}
+		else
+		{
+			left_move_flag = FALSE;
 		}
 
 		if (GetInputKeyData(KEY_INPUT_RIGHT))
 		{
 			player.pos.x += player.vel.x * player.speed.x;
+			right_move_flag = TRUE;
+		}
+		else
+		{
+			right_move_flag = FALSE;
 		}
 
 		if (GetInputKeyData(KEY_INPUT_UP))
@@ -144,15 +161,36 @@ void DrawPlayer(void)
 {
 	static int player_count = 0;
 	static int temp = 0;
+	static int temp_l = 4;
+	static int temp_r = 8;
+
+	double p_rota = 1.5;
 
 	if (!dead_flag)
 	{
-		temp = player_count % 20 / 10;
+		temp = player_count % 40 / 10;
 
-		if (temp == 2) { temp = 0; player_count = 0; }
+		if (temp == 4) { temp = 0; player_count = 0; }
+		if (temp == 8) { temp = 4; player_count = 0; }
+		if (temp == 12) { temp = 8; player_count = 0; }
 
-		DrawGraph((player.pos.x - PLAYER_SIZE / 2), (player.pos.y - PLAYER_SIZE / 2),
-			player_tex[temp], TRUE);
+		if ((!left_move_flag) && (!right_move_flag))
+		{
+			DrawRotaGraph(player.pos.x, player.pos.y, p_rota, 0, player_tex[temp], TRUE);
+		}
+		else
+		{
+			if (left_move_flag)
+			{
+				temp += 4;
+				DrawRotaGraph(player.pos.x, player.pos.y, p_rota, 0, player_tex[temp], TRUE);
+			}
+			if (right_move_flag)
+			{
+				temp += 8;
+				DrawRotaGraph(player.pos.x, player.pos.y, p_rota, 0, player_tex[temp], TRUE);
+			}
+		}
 		player_count++;
 	}
 	else
@@ -163,9 +201,27 @@ void DrawPlayer(void)
 
 		if (player_count % 2 == 0)
 		{
-			DrawGraph((player.pos.x - PLAYER_SIZE / 2), (player.pos.y - PLAYER_SIZE / 2),
-				player_tex[temp], TRUE);
+
+			if ((!left_move_flag) && (!right_move_flag))
+			{
+				DrawRotaGraph(player.pos.x, player.pos.y, p_rota, 0, player_tex[temp], TRUE);
+			}
+			else
+			{
+				if (left_move_flag)
+				{
+					temp += 4;
+					DrawRotaGraph(player.pos.x, player.pos.y, p_rota, 0, player_tex[temp], TRUE);
+				}
+				if (right_move_flag)
+				{
+					temp += 8;
+					DrawRotaGraph(player.pos.x, player.pos.y, p_rota, 0, player_tex[temp], TRUE);
+				}
+			}
+			
 		}
+		
 		player_count++;
 	}
 	DrawRotaGraph(player.pos.x, player.pos.y, 1.0, player_angle[0].rad, player_collision, TRUE);
@@ -197,7 +253,7 @@ void MovePlayerShot(void)
 
 	if (!dead_flag)
 	{
-		// Ｚキーが押されて, ６フレームに一発発射する
+		// Ｚキーが押されて, 4フレームに一発発射する
 		if ((GetInputKeyData(KEY_INPUT_Z)) && (GetGameCount() % 4 == 0))
 		{
 			for (i = 0; i < PLAYER_SHOT_NUM; i++)
@@ -332,6 +388,7 @@ void MovePlayerShot(void)
 			}
 		}
 	}
+
 	// フラグがTRUEの弾だけ移動させる
 	for (i = 0; i < PLAYER_SHOT_NUM; i++)
 	{
@@ -376,6 +433,10 @@ double GetPlayerPosY(void)
 BOOL GetPlayerShotFlag(int i)
 {
 	return player_shot[i].flag;
+}
+BOOL GetPlayerDeadFlag(void)
+{
+	return dead_flag;
 }
 
 int GetPlayerShotPosX(int i)

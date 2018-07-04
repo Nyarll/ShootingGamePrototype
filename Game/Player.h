@@ -12,6 +12,7 @@ double GetPlayerPosX(void);
 double GetPlayerPosY(void);
 
 BOOL GetPlayerShotFlag(int i);
+BOOL GetPlayerDeadFlag(void);
 
 int GetPlayerShotPosX(int i);
 int GetPlayerShotPosY(int i);

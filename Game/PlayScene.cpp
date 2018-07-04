@@ -172,11 +172,14 @@ void EnemyShot_PlayerCollision(void)
 {
 	int i;
 
-	for (i = 0; i < ENEMY_SHOT_NUM; i++)
+	if (!GetPlayerDeadFlag())
 	{
-		if (CircleCollision(enemy_shot[i].r, PLAYER_R, enemy_shot[i].base.pos.x, GetPlayerPosX(), enemy_shot[i].base.pos.y, GetPlayerPosY()))
+		for (i = 0; i < ENEMY_SHOT_NUM; i++)
 		{
-			SetPlayerDeadFlag();
+			if (CircleCollision(enemy_shot[i].r, PLAYER_R, enemy_shot[i].base.pos.x, GetPlayerPosX(), enemy_shot[i].base.pos.y, GetPlayerPosY()))
+			{
+				SetPlayerDeadFlag();
+			}
 		}
 	}
 }
