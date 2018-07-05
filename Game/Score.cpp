@@ -6,11 +6,13 @@
 static HGRP score_gh[10];
 static char buf[100];
 static int score;
+static int graze_num;
 static int num;
 
 void InitScore(void)
 {
 	score = 0;
+	graze_num = 0;
 	LoadDivGraph("Resources/Textures/num_white.png", 10, 10, 1, 19, 27, score_gh);
 }
 void UpdateScore(void)
@@ -34,7 +36,7 @@ void DrawScore(void)
 	}
 
 	// ÉOÉåÉCÉY
-	num = sprintf(buf, "%d", score);
+	num = sprintf(buf, "%d", graze_num);
 	for (int i = 0; i < num; ++i)
 	{
 		DrawGraph(SCORE_X + 20 + i * 19, 155, score_gh[(buf[i] - '0')], TRUE);
@@ -79,4 +81,10 @@ void SetItemGet(int index = 1)
 		break;
 
 	}
+}
+
+void SetGrazeScore(void)
+{
+	score += 5;
+	graze_num += 1;
 }

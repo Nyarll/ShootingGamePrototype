@@ -96,6 +96,7 @@
     <ClCompile Include="Game\Enemy.cpp" />
     <ClCompile Include="Game\EnemyMovePattern.cpp" />
     <ClCompile Include="Game\EnemyShot.cpp" />
+    <ClCompile Include="Game\Graze.cpp" />
     <ClCompile Include="Game\Item.cpp" />
     <ClCompile Include="Game\MyLibrary\Collision.cpp" />
     <ClCompile Include="Game\MyLibrary\DrawFunction.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="Game\Back.h" />
     <ClInclude Include="Game\Defines.h" />
     <ClInclude Include="Game\Enemy.h" />
+    <ClInclude Include="Game\Graze.h" />
     <ClInclude Include="Game\Item.h" />
     <ClInclude Include="Game\MyLibrary\Collision.h" />
     <ClInclude Include="Game\MyLibrary\DrawFunction.h" />

@@ -1,8 +1,11 @@
+#include <math.h>
 #include "Player.h"
 #include "Enemy.h"
 #include "Score.h"
 #include "Item.h"
 #include "Defines.h"
+
+#define BOM_SHOT_NUM 8
 
 static GameObject player;			// プレイヤーオブジェクト
 static HGRP player_tex[12];			// プレイヤーのグラフィックハンドル
@@ -17,8 +20,8 @@ static int shot_power;		// ショットの強さ
 
 LIFE player_life;
 BOMB player_bom;
-
 BOMB player_bom_type;
+Shot bom_shot[BOM_SHOT_NUM];
 BOOL bom_flag;
 
 static HGRP bom_gh[5];
@@ -34,6 +37,8 @@ static BOOL dead_flag;
 
 void InitPlayer(void)
 {
+	int i;
+
 	// 最初の中心座標
 	player.pos.x = GAME_SCREEN_CENTER_X;
 	player.pos.y = GAME_SCREEN_CENTER_Y + GAME_SCREEN_CENTER_Y / 2;
@@ -60,6 +65,11 @@ void InitPlayer(void)
 	bom_gh[2] = LoadGraph("Resources/Textures/MagicCircle3.png");
 	bom_gh[3] = LoadGraph("Resources/Textures/MagicCircle4.png");
 	bom_gh[4] = LoadGraph("Resources/Textures/MagicCircle5.png");
+
+	for (i = 0; i < BOM_SHOT_NUM; i++)
+	{
+		bom_shot[i].base.sprite.texture = LoadGraph("Resources/Textures/Particle.png");
+	}
 
 	player_angle[0].deg = 0;
 	player_angle[1].deg = 360;
@@ -192,7 +202,7 @@ void DrawPlayer(void)
 
 	double p_rota = 1.5;
 
-	red = 128;	green = 0;	blue = 255;
+	red = 64;	green = 64;	blue = 255;
 
 	if (circle_count == 360)
 	{
@@ -473,28 +483,70 @@ void PlayBom(void)
 	{
 		if ((player_bom > 0) && (!bom_flag))
 		{
-			player_bom -= 1;
+			//player_bom -= 1;
 			bom_flag = TRUE;
 		}
 	}
 }
+void InitBomShot(void)
+{
+	int i;
 
+	for (i = 0; i < BOM_SHOT_NUM; i++)
+	{
+		bom_shot[i].r = 64;
+		bom_shot[i].base.pos = player.pos;
+		bom_shot[i].base.vel = { 0,0 };
+		bom_shot[i].angle = bom_shot[i].rad = 0;
+	}
+}
 void MoveBom(BOMB type)
 {
 	int i, j;
 	switch (type)
 	{
 	case 1:
+		for (i = 0; i < BOM_SHOT_NUM; i++)
+		{
+			bom_shot[i].base.vel.x = cos(DEG_TO_RAD(180 - (i * 45)));
+			bom_shot[i].base.vel.y = -sin(DEG_TO_RAD(180 - (i * 45)));
+
+			bom_shot[i].base.pos.x += bom_shot[i].base.vel.x * 5;
+			bom_shot[i].base.pos.y += bom_shot[i].base.vel.y * 5;
+		}
 		for (i = 0; i < GetEnemyNum(); i++)
 		{
 			if ((enemy_flag[i]) && (GetGameCount() > enemy[i].in_time))
 			{
-				SetEnemyDeadFlag(i);
-				SetEnemyKillScore();
-				SetItemFlag(enemy[i].item, enemy[i].x, enemy[i].y);
-				for (j = 0; j < ENEMY_SHOT_NUM; j++)
+				if (CircleCollision(ENEMY_SIZE, (127 * 3), enemy[i].x, player.pos.x, enemy[i].y, player.pos.y))
 				{
-					if (enemy_shot[j].flag)
+					SetEnemyDeadFlag(i);
+					SetEnemyKillScore();
+					SetItemFlag(enemy[i].item, enemy[i].x, enemy[i].y);
+				}
+				for (j = 0; j < BOM_SHOT_NUM; j++)
+				{
+					if (CircleCollision(ENEMY_SIZE, bom_shot[j].r, enemy[i].x, bom_shot[j].base.pos.x, enemy[i].y, bom_shot[j].base.pos.y))
+					{
+						SetEnemyDeadFlag(i);
+						SetEnemyKillScore();
+						SetItemFlag(enemy[i].item, enemy[i].x, enemy[i].y);
+					}
+				}
+			}
+		}
+		for (j = 0; j < ENEMY_SHOT_NUM; j++)
+		{
+			if (enemy_shot[j].flag)
+			{
+				if (CircleCollision(enemy_shot[j].r, (127 * 3), enemy_shot[j].base.pos.x, player.pos.x, enemy_shot[j].base.pos.y, player.pos.y))
+				{
+					SetItemFlag(0, enemy_shot[j].base.pos.x, enemy_shot[j].base.pos.y);
+					enemy_shot[j].flag = FALSE;
+				}
+				for (i = 0; i < BOM_SHOT_NUM; i++)
+				{
+					if (CircleCollision(enemy_shot[j].r, bom_shot[i].r, enemy_shot[j].base.pos.x, bom_shot[i].base.pos.x, enemy_shot[j].base.pos.y, bom_shot[i].base.pos.y))
 					{
 						SetItemFlag(0, enemy_shot[j].base.pos.x, enemy_shot[j].base.pos.y);
 						enemy_shot[j].flag = FALSE;
@@ -507,6 +559,8 @@ void MoveBom(BOMB type)
 	if (bom_count > 180)
 	{
 		bom_flag = FALSE;
+		InitBomShot();
+		bom_deg[0] = 0;
 		bom_count = 0;
 	}
 	else
@@ -516,13 +570,10 @@ void MoveBom(BOMB type)
 }
 void DrawBom(BOMB type)
 {
+	int i;
 	switch (type)
 	{
 	case 1:
-		if (bom_deg[0] == 180)
-		{
-			bom_deg[0] = 0;
-		}
 		bom_rad[0] = DEG_TO_RAD(bom_deg[0]);
 		if (bom_deg[0] < 90)
 		{
@@ -533,8 +584,15 @@ void DrawBom(BOMB type)
 			bright[0] -= 9;
 		}
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, bright[0]);
+		SetDrawBright(64, 64, 255);
 		DrawRotaGraph(player.pos.x, player.pos.y, 3.0, bom_rad[0], bom_gh[0], TRUE);
 		DrawRotaGraph(player.pos.x, player.pos.y, 2.0, -bom_rad[0], bom_gh[3], TRUE);
+		for (i = 0; i < BOM_SHOT_NUM; i++)
+		{
+			SetDrawBright(255, 255, 255);
+			DrawRotaGraph(bom_shot[i].base.pos.x, bom_shot[i].base.pos.y, 1.0, bom_rad[0], bom_shot[i].base.sprite.texture, TRUE);
+		}
+		SetDrawBright(255, 255, 255);
 		bom_deg[0]++;
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		break;

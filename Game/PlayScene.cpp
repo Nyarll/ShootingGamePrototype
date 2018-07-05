@@ -4,6 +4,7 @@
 #include "Back.h"
 #include "Score.h"
 #include "Item.h"
+#include "Graze.h"
 #include "Defines.h"
 
 #define PLAYER_R (PLAYER_SIZE / 14)
@@ -35,6 +36,7 @@ void InitPlay(void)
 	InitPlayerShot();	// ƒvƒŒƒCƒ„[‚Ì’e‚Ì‰Šú‰»
 	InitScore();
 	InitItem();
+	InitGraze();
 }
 void UpdatePlay(void)
 {
@@ -50,6 +52,10 @@ void UpdatePlay(void)
 	{
 		MoveBom(player_bom_type);
 	}
+	else
+	{
+		InitBomShot();
+	}
 	MoveEnemy();
 
 	for (i = 0; i < GetEnemyNum(); i++)
@@ -61,9 +67,11 @@ void UpdatePlay(void)
 
 	PlayerShot_EnemyCollision();
 	EnemyShot_PlayerCollision();
+	GrazeCollision();
 	Player_ItemCollision();
 
 	MoveItem();
+	MoveGraze();
 	UpdateScore();
 
 	UseDebug();
@@ -110,6 +118,7 @@ void DrawGameObject(void)
 	SetDrawBright(255, 255, 255);
 	DrawPlayerShot();
 	DrawItem();
+	DrawGraze();
 	DrawPlayer();
 	DrawEnemy();
 }
@@ -209,6 +218,25 @@ void EnemyShot_PlayerCollision(void)
 					SetPlayerDeadFlag();
 					player_life -= 1;
 					player_bom = 3;
+					break;
+				}
+			}
+		}
+	}
+}
+void GrazeCollision(void)
+{
+	int i;
+
+	if (!GetPlayerDeadFlag())
+	{
+		for (i = 0; i < ENEMY_SHOT_NUM; i++)
+		{
+			if (enemy_shot[i].flag)
+			{
+				if (CircleCollision(enemy_shot[i].r, (PLAYER_SIZE / 4), enemy_shot[i].base.pos.x, GetPlayerPosX(), enemy_shot[i].base.pos.y, GetPlayerPosY()))
+				{
+					SetGrazeFlag();
 					break;
 				}
 			}

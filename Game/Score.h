@@ -6,3 +6,5 @@ void DrawScore(void);
 
 void SetEnemyKillScore(void);
 void SetItemGet(int index);
+
+void SetGrazeScore(void);

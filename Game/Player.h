@@ -16,6 +16,7 @@ void DrawPlayerShot(void);	// ƒvƒŒƒCƒ„[‚Ì’e‚Ì•`‰æ
 
 void PlayBom(void);
 
+void InitBomShot(void);
 void MoveBom(BOMB type);
 void DrawBom(BOMB type);
 
