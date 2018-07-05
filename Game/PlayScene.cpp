@@ -30,6 +30,7 @@ void InitPlay(void)
 	game_logo = LoadGraph("Resources/Textures/sample.png");
 
 	InitBack("Resources/Textures/Stage1_back.png");
+	player_bom_type = 1;	// デフォ
 	InitPlayer();		// プレイヤーの初期化
 	InitPlayerShot();	// プレイヤーの弾の初期化
 	InitScore();
@@ -45,6 +46,10 @@ void UpdatePlay(void)
 	MoveBack();
 	MovePlayerShot();
 	PlayBom();
+	if (bom_flag)
+	{
+		MoveBom(player_bom_type);
+	}
 	MoveEnemy();
 
 	for (i = 0; i < GetEnemyNum(); i++)
@@ -53,7 +58,7 @@ void UpdatePlay(void)
 	}
 
 	MoveEnemyShot();
-	
+
 	PlayerShot_EnemyCollision();
 	EnemyShot_PlayerCollision();
 	Player_ItemCollision();
@@ -93,16 +98,21 @@ void FinalPlay(void)
 
 }
 
-
 void DrawGameObject(void)
 {
 	DrawBack();
+
+	if (bom_flag)
+	{
+		DrawBom(1);
+	}
+
+	SetDrawBright(255, 255, 255);
 	DrawPlayerShot();
 	DrawItem();
 	DrawPlayer();
 	DrawEnemy();
 }
-
 
 void InitStage(void)
 {
@@ -192,12 +202,15 @@ void EnemyShot_PlayerCollision(void)
 	{
 		for (i = 0; i < ENEMY_SHOT_NUM; i++)
 		{
-			if (CircleCollision(enemy_shot[i].r, PLAYER_R, enemy_shot[i].base.pos.x, GetPlayerPosX(), enemy_shot[i].base.pos.y, GetPlayerPosY()))
+			if (enemy_shot[i].flag)
 			{
-				SetPlayerDeadFlag();
-				player_life -= 1;
-				player_bom = 3;
-				break;
+				if (CircleCollision(enemy_shot[i].r, PLAYER_R, enemy_shot[i].base.pos.x, GetPlayerPosX(), enemy_shot[i].base.pos.y, GetPlayerPosY()))
+				{
+					SetPlayerDeadFlag();
+					player_life -= 1;
+					player_bom = 3;
+					break;
+				}
 			}
 		}
 	}
@@ -263,7 +276,7 @@ void DrawDebug(void)
 
 		// 当たり判定の表示
 		DrawCircle(GetPlayerPosX(), GetPlayerPosY(), PLAYER_R, COLOR_RED, FALSE, 3);
-		
+
 		// グレイズ判定の表示
 		DrawCircle(GetPlayerPosX(), GetPlayerPosY(), (PLAYER_SIZE / 4), COLOR_PURPLE, FALSE, 2);
 

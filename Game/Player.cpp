@@ -1,4 +1,7 @@
 #include "Player.h"
+#include "Enemy.h"
+#include "Score.h"
+#include "Item.h"
 #include "Defines.h"
 
 static GameObject player;			// プレイヤーオブジェクト
@@ -14,6 +17,16 @@ static int shot_power;		// ショットの強さ
 
 LIFE player_life;
 BOMB player_bom;
+
+BOMB player_bom_type;
+BOOL bom_flag;
+
+static HGRP bom_gh[5];
+static double bom_deg[5];
+static double bom_rad[5];
+static double bright[5];
+
+static int bom_count;
 
 static int dead_count;
 
@@ -33,12 +46,20 @@ void InitPlayer(void)
 
 	shot_power = 1;
 
+	bom_flag = FALSE;
+
 	dead_flag = FALSE;
 	dead_count = 0;
 
 	player_collision = LoadGraph("Resources/Textures/atari.png");
 
 	LoadDivGraph("Resources/Textures/huto.png", 12, 4, 3, 48, 48, player_tex);
+
+	bom_gh[0] = LoadGraph("Resources/Textures/MagicCircle1.png");
+	bom_gh[1] = LoadGraph("Resources/Textures/MagicCircle2.png");
+	bom_gh[2] = LoadGraph("Resources/Textures/MagicCircle3.png");
+	bom_gh[3] = LoadGraph("Resources/Textures/MagicCircle4.png");
+	bom_gh[4] = LoadGraph("Resources/Textures/MagicCircle5.png");
 
 	player_angle[0].deg = 0;
 	player_angle[1].deg = 360;
@@ -162,11 +183,21 @@ void MovePlayer(void)
 void DrawPlayer(void)
 {
 	static int player_count = 0;
+	static double circle_count = 0;
 	static int temp = 0;
 	static int temp_l = 4;
 	static int temp_r = 8;
 
+	int red, green, blue;
+
 	double p_rota = 1.5;
+
+	red = 128;	green = 0;	blue = 255;
+
+	if (circle_count == 360)
+	{
+		circle_count = 0;
+	}
 
 	if (!dead_flag)
 	{
@@ -175,13 +206,19 @@ void DrawPlayer(void)
 		if (temp == 4) { temp = 0; player_count = 0; }
 		if (temp == 8) { temp = 4; player_count = 0; }
 		if (temp == 12) { temp = 8; player_count = 0; }
-
+		
 		if ((!left_move_flag) && (!right_move_flag))
 		{
+			SetDrawBright(red, green, blue);
+			DrawRotaGraph(player.pos.x, player.pos.y, 0.5, (DEG_TO_RAD(circle_count)), bom_gh[3], TRUE);
+			SetDrawBright(255, 255, 255);
 			DrawRotaGraph(player.pos.x, player.pos.y, p_rota, 0, player_tex[temp], TRUE);
 		}
 		else
 		{
+			SetDrawBright(red, green, blue);
+			DrawRotaGraph(player.pos.x, player.pos.y, 0.5, (DEG_TO_RAD(circle_count)), bom_gh[3], TRUE);
+			SetDrawBright(255, 255, 255);
 			if (left_move_flag)
 			{
 				temp += 4;
@@ -206,10 +243,16 @@ void DrawPlayer(void)
 
 			if ((!left_move_flag) && (!right_move_flag))
 			{
+				SetDrawBright(red, green, blue);
+				DrawRotaGraph(player.pos.x, player.pos.y, 0.5, (DEG_TO_RAD(circle_count)), bom_gh[3], TRUE);
+				SetDrawBright(255, 255, 255);
 				DrawRotaGraph(player.pos.x, player.pos.y, p_rota, 0, player_tex[temp], TRUE);
 			}
 			else
 			{
+				SetDrawBright(red, green, blue);
+				DrawRotaGraph(player.pos.x, player.pos.y, 0.5, (DEG_TO_RAD(circle_count)), bom_gh[3], TRUE);
+				SetDrawBright(255, 255, 255);
 				if (left_move_flag)
 				{
 					temp += 4;
@@ -226,6 +269,7 @@ void DrawPlayer(void)
 		
 		player_count++;
 	}
+	circle_count += 2;
 	DrawRotaGraph(player.pos.x, player.pos.y, 1.0, player_angle[0].rad, player_collision, TRUE);
 	DrawRotaGraph(player.pos.x, player.pos.y, 1.0, player_angle[1].rad, player_collision, TRUE);
 
@@ -427,10 +471,73 @@ void PlayBom(void)
 {
 	if ((GetInputKeyData(KEY_INPUT_X)) && (!GetInputKeyOldData(KEY_INPUT_X)))
 	{
-		if (player_bom > 0)
+		if ((player_bom > 0) && (!bom_flag))
 		{
 			player_bom -= 1;
+			bom_flag = TRUE;
 		}
+	}
+}
+
+void MoveBom(BOMB type)
+{
+	int i, j;
+	switch (type)
+	{
+	case 1:
+		for (i = 0; i < GetEnemyNum(); i++)
+		{
+			if ((enemy_flag[i]) && (GetGameCount() > enemy[i].in_time))
+			{
+				SetEnemyDeadFlag(i);
+				SetEnemyKillScore();
+				SetItemFlag(enemy[i].item, enemy[i].x, enemy[i].y);
+				for (j = 0; j < ENEMY_SHOT_NUM; j++)
+				{
+					if (enemy_shot[j].flag)
+					{
+						SetItemFlag(0, enemy_shot[j].base.pos.x, enemy_shot[j].base.pos.y);
+						enemy_shot[j].flag = FALSE;
+					}
+				}
+			}
+		}
+		break;
+	}
+	if (bom_count > 180)
+	{
+		bom_flag = FALSE;
+		bom_count = 0;
+	}
+	else
+	{
+		bom_count++;
+	}
+}
+void DrawBom(BOMB type)
+{
+	switch (type)
+	{
+	case 1:
+		if (bom_deg[0] == 180)
+		{
+			bom_deg[0] = 0;
+		}
+		bom_rad[0] = DEG_TO_RAD(bom_deg[0]);
+		if (bom_deg[0] < 90)
+		{
+			bright[0] += 9;
+		}
+		if (bom_deg[0] >= 90)
+		{
+			bright[0] -= 9;
+		}
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, bright[0]);
+		DrawRotaGraph(player.pos.x, player.pos.y, 3.0, bom_rad[0], bom_gh[0], TRUE);
+		DrawRotaGraph(player.pos.x, player.pos.y, 2.0, -bom_rad[0], bom_gh[3], TRUE);
+		bom_deg[0]++;
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		break;
 	}
 }
 
