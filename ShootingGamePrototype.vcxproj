@@ -92,6 +92,7 @@
   <!-- ソースファイル -->
   <ItemGroup>
     <ClCompile Include="Game\Back.cpp" />
+    <ClCompile Include="Game\Boss.cpp" />
     <ClCompile Include="Game\Defines.cpp" />
     <ClCompile Include="Game\Enemy.cpp" />
     <ClCompile Include="Game\EnemyMovePattern.cpp" />
@@ -115,6 +116,7 @@
   <!-- ヘッダファイル -->
   <ItemGroup>
     <ClInclude Include="Game\Back.h" />
+    <ClInclude Include="Game\Boss.h" />
     <ClInclude Include="Game\Defines.h" />
     <ClInclude Include="Game\Enemy.h" />
     <ClInclude Include="Game\Graze.h" />

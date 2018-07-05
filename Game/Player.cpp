@@ -483,7 +483,7 @@ void PlayBom(void)
 	{
 		if ((player_bom > 0) && (!bom_flag))
 		{
-			//player_bom -= 1;
+			player_bom -= 1;
 			bom_flag = TRUE;
 		}
 	}
@@ -521,6 +521,7 @@ void MoveBom(BOMB type)
 				if (CircleCollision(ENEMY_SIZE, (127 * 3), enemy[i].x, player.pos.x, enemy[i].y, player.pos.y))
 				{
 					SetEnemyDeadFlag(i);
+					SetDeadEffect(i);
 					SetEnemyKillScore();
 					SetItemFlag(enemy[i].item, enemy[i].x, enemy[i].y);
 				}
@@ -529,6 +530,7 @@ void MoveBom(BOMB type)
 					if (CircleCollision(ENEMY_SIZE, bom_shot[j].r, enemy[i].x, bom_shot[j].base.pos.x, enemy[i].y, bom_shot[j].base.pos.y))
 					{
 						SetEnemyDeadFlag(i);
+						SetDeadEffect(i);
 						SetEnemyKillScore();
 						SetItemFlag(enemy[i].item, enemy[i].x, enemy[i].y);
 					}

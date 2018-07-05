@@ -127,6 +127,9 @@
     <ClCompile Include="Game\Graze.cpp">
       <Filter>ゲーム\PlayScene\Graze</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Boss.cpp">
+      <Filter>ゲーム\PlayScene\Boss</Filter>
+    </ClCompile>
   </ItemGroup>
   <!-- ヘッダファイル -->
   <ItemGroup>
@@ -195,6 +198,9 @@
     </ClInclude>
     <ClInclude Include="Game\Graze.h">
       <Filter>ゲーム\PlayScene\Graze</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Boss.h">
+      <Filter>ゲーム\PlayScene\Boss</Filter>
     </ClInclude>
   </ItemGroup>
   <!-- リソースファイル -->

@@ -21,8 +21,11 @@ void UpdateScore(void)
 }
 void DrawScore(void)
 {
+	SetFontSize(20);
+
 	// ハイスコア
 	num = sprintf(buf, "%d", score);
+	DrawFormatString(SCORE_X, 15, COLOR_WHITE, "High Score");
 	for (int i = 0; i < num; ++i)
 	{
 		DrawGraph(SCORE_X + 20 + i * 19, 35, score_gh[(buf[i] - '0')], TRUE);
@@ -30,6 +33,7 @@ void DrawScore(void)
 
 	// スコア
 	num = sprintf(buf, "%d", score);
+	DrawFormatString(SCORE_X, 75, COLOR_WHITE, "Score");
 	for (int i = 0; i < num; ++i) 
 	{
 		DrawGraph(SCORE_X + 20 + i * 19, 95, score_gh[(buf[i] - '0')], TRUE);
@@ -37,6 +41,7 @@ void DrawScore(void)
 
 	// グレイズ
 	num = sprintf(buf, "%d", graze_num);
+	DrawFormatString(SCORE_X, 135, COLOR_WHITE, "Graze");
 	for (int i = 0; i < num; ++i)
 	{
 		DrawGraph(SCORE_X + 20 + i * 19, 155, score_gh[(buf[i] - '0')], TRUE);
@@ -44,6 +49,7 @@ void DrawScore(void)
 
 	// 残機
 	num = sprintf(buf, "%d", player_life);
+	DrawFormatString(SCORE_X, 195, COLOR_WHITE, "Life");
 	for (int i = 0; i < num; ++i)
 	{
 		DrawGraph(SCORE_X + 20 + i * 19, 215, score_gh[(buf[i] - '0')], TRUE);
@@ -51,6 +57,7 @@ void DrawScore(void)
 
 	// 残ボム
 	num = sprintf(buf, "%d", player_bom);
+	DrawFormatString(SCORE_X, 255, COLOR_WHITE, "Bom");
 	for (int i = 0; i < num; ++i)
 	{
 		DrawGraph(SCORE_X + 20 + i * 19, 275, score_gh[(buf[i] - '0')], TRUE);

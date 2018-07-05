@@ -195,6 +195,7 @@ void PlayerShot_EnemyCollision(void)
 					if (CircleCollision(PLAYER_SHOT_SIZE, ENEMY_SIZE, GetPlayerShotPosX(i), GetEnemyPosX(j), GetPlayerShotPosY(i), GetEnemyPosY(j)))
 					{
 						SetEnemyDeadFlag(j);
+						SetDeadEffect(j);
 						SetEnemyKillScore();
 						SetItemFlag(enemy[j].item, enemy[j].x, enemy[j].y);
 					}

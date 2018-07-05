@@ -68,3 +68,6 @@ int GetEnemyNum(void);
 BOOL GetEnemyShotFlag(int i);
 double GetEnemyShotSpeedY(void);
 double GetEnemyShotVelY(void);
+
+void DrawDeadEffect(void);
+void SetDeadEffect(int index);

@@ -9,6 +9,8 @@ EnemyData data[256];		// バッファ
 int enemy_num;				// エネミーの数
 BOOL enemy_flag[256];		// 死んだらFALSE
 BOOL enemy_cross_flag[256];	// プレイヤーと重なったか
+HGRP enemy_gh[8];
+int enemy_count[256];
 
 Shot enemy_shot[ENEMY_SHOT_NUM];	// エネミーの弾オブジェクト
 double shot_speed_data[ENEMY_SHOT_NUM];
@@ -18,10 +20,19 @@ int shotwait_count[ENEMY_SHOT_NUM];
 int s[256];	// 発射中の弾の数
 double rad[ENEMY_SHOT_NUM];
 
+HGRP dead_effect;
+BOOL effect_flag[256];
+double effect_rad[256];
+Vector2D effect_pos[256];
+int effect_cnt[256];
+double effect_deg[256] = { 0 };
+
 void InitEnemy(int stage)
 {
 	int i;
 	char file_name[MAX_PATH];
+
+	dead_effect = LoadGraph("Resources/Textures/dead_effect.png");
 
 	SetEnemyNum(stage);
 	InitEnemyShot();
@@ -53,6 +64,8 @@ void InitEnemy(int stage)
 		enemy[i].hp = data[i].hp;
 		enemy[i].item = data[i].item;
 
+		LoadDivGraph("Resources/Textures/enemy.png", 8, 4, 2, 32, 32, enemy_gh);
+
 		enemy_vel[i] = { 0,0 };
 		enemy_angle[i] = 0;
 
@@ -62,6 +75,10 @@ void InitEnemy(int stage)
 		shot_count[i] = 0;
 		s[i] = { 0 };
 		rad[i] = 0;
+
+		effect_rad[i] = 0;
+		effect_pos[i] = { 0,0 };
+		effect_flag[i] = FALSE;
 	}
 
 	fclose(fp);
@@ -208,10 +225,28 @@ void MoveEnemy(void)
 			}
 		}
 	}
+
+	for (i = 0; i < enemy_num; i++)
+	{
+		if (effect_flag[i])
+		{
+			effect_cnt[i]++;
+
+			if (effect_cnt[i] > 10)
+			{
+				effect_flag[i] = 0;
+				effect_rad[i] = 0;
+				effect_deg[i] = 0;
+				effect_pos[i] = { 0,0 };
+				effect_flag[i] = FALSE;
+			}
+		}
+	}
 }
 void DrawEnemy(void)
 {
 	int i;
+	static int temp[256] = { 0 };
 
 	for (i = 0; i < enemy_num; i++)
 	{
@@ -220,11 +255,27 @@ void DrawEnemy(void)
 			switch (enemy[i].type)
 			{
 			case 1:
-				DrawCircle(enemy[i].x, enemy[i].y, ENEMY_SIZE, COLOR_RED, TRUE);
+				temp[i] = enemy_count[i] % 70 / 10;
+				if (temp[i] == 4)
+				{
+					temp[i] = 3;
+				}
+				if (temp[i] == 5)
+				{
+					temp[i] = 2;
+				}
+				if (temp[i] == 6)
+				{
+					temp[i] = 1;
+				}
+				DrawGraph(enemy[i].x, enemy[i].y,enemy_gh[temp[i]], TRUE);
+				enemy_count[i]++;
 				break;
 			}
 		}
 	}
+
+	DrawDeadEffect();
 }
 
 double GetEnemyShotSpeedY(void)
@@ -262,4 +313,25 @@ int GetEnemyNum(void)
 BOOL GetEnemyShotFlag(int i)
 {
 	return enemy_shot[i].flag;
+}
+
+void DrawDeadEffect(void)
+{
+	int i;
+
+	for (i = 0; i < GetEnemyNum(); i++)
+	{
+		if (effect_flag[i])
+		{
+			DrawRotaGraph(effect_pos[i].x, effect_pos[i].y, 0.5, effect_rad[i], dead_effect, TRUE);
+			effect_rad[i] = DEG_TO_RAD(effect_deg[i]);
+			effect_deg[i] += 20;
+		}
+	}
+}
+void SetDeadEffect(int index)
+{
+	effect_pos[index].x = enemy[index].x;
+	effect_pos[index].y = enemy[index].y;
+	effect_flag[index] = TRUE;
 }
