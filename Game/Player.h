@@ -10,6 +10,9 @@ void InitPlayer(void);		// プレイヤーの初期化
 void MovePlayer(void);		// プレイヤーの移動
 void DrawPlayer(void);		// プレイヤーの描画
 
+void MoveMagicCircle(void);	// 魔法陣の周囲の●
+void DrawMagicCircle(void);
+
 void InitPlayerShot(void);	// プレイヤーの弾の初期化
 void MovePlayerShot(void);	// プレイヤーの弾の移動
 void DrawPlayerShot(void);	// プレイヤーの弾の描画
@@ -19,6 +22,8 @@ void PlayBom(void);
 void InitBomShot(void);
 void MoveBom(BOMB type);
 void DrawBom(BOMB type);
+
+void DrawCutin(void);
 
 double GetPlayerPosX(void);
 double GetPlayerPosY(void);
@@ -36,3 +41,4 @@ void SetPlayerDeadFlag(void);
 void SetShotPower1(void);
 void SetShotPower2(void);
 void SetShotPower3(void);
+void SetShotPower4(void);

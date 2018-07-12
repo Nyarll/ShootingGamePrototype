@@ -1,3 +1,5 @@
+#pragma warning (disable:4244)
+
 #include <math.h>
 #include "Player.h"
 #include "Enemy.h"
@@ -9,20 +11,29 @@
 
 static GameObject player;			// プレイヤーオブジェクト
 static HGRP player_tex[12];			// プレイヤーのグラフィックハンドル
+static double circle_count = 0;
 
 static BOOL right_move_flag, left_move_flag;
 
-static HGRP player_collision;
+static HGRP player_collision;		// 当たり判定用の円を画像で描画する用
 static DegRad player_angle[2];
 
 static Shot player_shot[PLAYER_SHOT_NUM];	// プレイヤーの弾オブジェクト
+static HGRP player_shot_gh[4];
 static int shot_power;		// ショットの強さ
+static BOOL ps[PLAYER_SHOT_NUM] = { FALSE };
+
+static Vector2D magic_ball[3];
 
 LIFE player_life;
 BOMB player_bom;
 BOMB player_bom_type;
 Shot bom_shot[BOM_SHOT_NUM];
 BOOL bom_flag;
+
+static Vector2D cutin_pos;
+static HGRP cutin_gh;
+static double cutin_bright;
 
 static HGRP bom_gh[5];
 static double bom_deg[5];
@@ -65,6 +76,8 @@ void InitPlayer(void)
 	bom_gh[2] = LoadGraph("Resources/Textures/MagicCircle3.png");
 	bom_gh[3] = LoadGraph("Resources/Textures/MagicCircle4.png");
 	bom_gh[4] = LoadGraph("Resources/Textures/MagicCircle5.png");
+
+	cutin_gh = LoadGraph("Resources/Textures/cutin.png");
 
 	for (i = 0; i < BOM_SHOT_NUM; i++)
 	{
@@ -193,21 +206,15 @@ void MovePlayer(void)
 void DrawPlayer(void)
 {
 	static int player_count = 0;
-	static double circle_count = 0;
+
 	static int temp = 0;
 	static int temp_l = 4;
 	static int temp_r = 8;
 
-	int red, green, blue;
+
 
 	double p_rota = 1.5;
 
-	red = 64;	green = 64;	blue = 255;
-
-	if (circle_count == 360)
-	{
-		circle_count = 0;
-	}
 
 	if (!dead_flag)
 	{
@@ -216,19 +223,15 @@ void DrawPlayer(void)
 		if (temp == 4) { temp = 0; player_count = 0; }
 		if (temp == 8) { temp = 4; player_count = 0; }
 		if (temp == 12) { temp = 8; player_count = 0; }
-		
+
 		if ((!left_move_flag) && (!right_move_flag))
 		{
-			SetDrawBright(red, green, blue);
-			DrawRotaGraph(player.pos.x, player.pos.y, 0.5, (DEG_TO_RAD(circle_count)), bom_gh[3], TRUE);
-			SetDrawBright(255, 255, 255);
+			DrawMagicCircle();
 			DrawRotaGraph(player.pos.x, player.pos.y, p_rota, 0, player_tex[temp], TRUE);
 		}
 		else
 		{
-			SetDrawBright(red, green, blue);
-			DrawRotaGraph(player.pos.x, player.pos.y, 0.5, (DEG_TO_RAD(circle_count)), bom_gh[3], TRUE);
-			SetDrawBright(255, 255, 255);
+			DrawMagicCircle();
 			if (left_move_flag)
 			{
 				temp += 4;
@@ -253,16 +256,12 @@ void DrawPlayer(void)
 
 			if ((!left_move_flag) && (!right_move_flag))
 			{
-				SetDrawBright(red, green, blue);
-				DrawRotaGraph(player.pos.x, player.pos.y, 0.5, (DEG_TO_RAD(circle_count)), bom_gh[3], TRUE);
-				SetDrawBright(255, 255, 255);
+				DrawMagicCircle();
 				DrawRotaGraph(player.pos.x, player.pos.y, p_rota, 0, player_tex[temp], TRUE);
 			}
 			else
 			{
-				SetDrawBright(red, green, blue);
-				DrawRotaGraph(player.pos.x, player.pos.y, 0.5, (DEG_TO_RAD(circle_count)), bom_gh[3], TRUE);
-				SetDrawBright(255, 255, 255);
+				DrawMagicCircle();
 				if (left_move_flag)
 				{
 					temp += 4;
@@ -274,14 +273,69 @@ void DrawPlayer(void)
 					DrawRotaGraph(player.pos.x, player.pos.y, p_rota, 0, player_tex[temp], TRUE);
 				}
 			}
-			
+
 		}
-		
+
 		player_count++;
 	}
 	circle_count += 2;
 	DrawRotaGraph(player.pos.x, player.pos.y, 1.0, player_angle[0].rad, player_collision, TRUE);
 	DrawRotaGraph(player.pos.x, player.pos.y, 1.0, player_angle[1].rad, player_collision, TRUE);
+
+}
+
+void MoveMagicCircle(void)
+{
+	static DegRad pdr1 = { 270,0 }, pdr2 = { 30,0 }, pdr3 = { 150,0 };
+
+	if (pdr1.deg == 360)
+	{
+		pdr1.deg = 0;
+	}
+	if (pdr2.deg == 360)
+	{
+		pdr2.deg = 0;
+	}
+	if (pdr3.deg == 360)
+	{
+		pdr3.deg = 0;
+	}
+
+	pdr1.rad = DEG_TO_RAD(pdr1.deg);
+	pdr2.rad = DEG_TO_RAD(pdr2.deg);
+	pdr3.rad = DEG_TO_RAD(pdr3.deg);
+
+	magic_ball[0].x = (GetPlayerPosX() + (3 * (PLAYER_SIZE / 4)) * cos(pdr1.rad));
+	magic_ball[1].x = (GetPlayerPosX() + (3 * (PLAYER_SIZE / 4)) * cos(pdr2.rad));
+	magic_ball[2].x = (GetPlayerPosX() + (3 * (PLAYER_SIZE / 4)) * cos(pdr3.rad));
+
+	magic_ball[0].y = (GetPlayerPosY() + (3 * (PLAYER_SIZE / 4)) * sin(pdr1.rad));
+	magic_ball[1].y = (GetPlayerPosY() + (3 * (PLAYER_SIZE / 4)) * sin(pdr2.rad));
+	magic_ball[2].y = (GetPlayerPosY() + (3 * (PLAYER_SIZE / 4)) * sin(pdr3.rad));
+
+	// デバッグ用
+	/*DrawCircle(magic_ball[0].x, magic_ball[0].y, 3, COLOR_RED, TRUE, 2);
+	DrawCircle(magic_ball[1].x, magic_ball[1].y, 3, COLOR_RED, TRUE, 2);
+	DrawCircle(magic_ball[2].x, magic_ball[2].y, 3, COLOR_RED, TRUE, 2);*/
+
+	pdr1.deg += 2;
+	pdr2.deg += 2;
+	pdr3.deg += 2;
+}
+void DrawMagicCircle(void)
+{
+	int red, green, blue;
+
+	red = 64;	green = 64;	blue = 255;
+
+	if (circle_count == 360)
+	{
+		circle_count = 0;
+	}
+
+	SetDrawBright(red, green, blue);
+	DrawRotaGraph(player.pos.x, player.pos.y, 0.5, 1 * (DEG_TO_RAD(circle_count)), bom_gh[3], TRUE);
+	SetDrawBright(255, 255, 255);
 
 }
 
@@ -301,16 +355,19 @@ void InitPlayerShot(void)
 
 		player_shot[i].flag = FALSE;
 	}
+
+	LoadDivGraph("Resources/Textures/player_bullet.png", 4, 1, 4, 48, 48, player_shot_gh);
 }
 void MovePlayerShot(void)
 {
 	int i;
 	int temp = 0;
+	
 
 	if (!dead_flag)
 	{
 		// Ｚキーが押されて, 4フレームに一発発射する
-		if ((GetInputKeyData(KEY_INPUT_Z)) && (GetGameCount() % 4 == 0))
+		if ((GetInputKeyData(KEY_INPUT_Z)) && (GetGameCount() % 5 == 0))
 		{
 			for (i = 0; i < PLAYER_SHOT_NUM; i++)
 			{
@@ -328,9 +385,11 @@ void MovePlayerShot(void)
 						player_shot[i].base.pos.y = player.pos.y;
 						player_shot[i].base.vel.x = 0;
 						player_shot[i].base.speed.x = player_shot[i].base.speed.y = 1;
+						player_shot[i].base.sprite.texture = player_shot_gh[1];
 						break;
 
 					case 2:
+						player_shot[i].base.sprite.texture = player_shot_gh[1];
 						if (temp == 0)
 						{
 							player_shot[i].base.pos.x = player.pos.x + 16;
@@ -350,60 +409,66 @@ void MovePlayerShot(void)
 						break;
 
 					case 3:
-						if (GetInputKeyData(KEY_INPUT_LSHIFT) == 1)
+						player_shot[i].base.sprite.texture = player_shot_gh[1];
+						if (temp == 0)
 						{
-							if (temp == 0)
-							{
-								player_shot[i].base.pos.x = player.pos.x;
-								player_shot[i].base.pos.y = player.pos.y;
-								player_shot[i].base.vel.x = 0;
-								player_shot[i].base.speed.x = player_shot[i].base.speed.y = 1;
-								temp = 1;
-							}
-							else if (temp == 1)
-							{
-								player_shot[i].base.pos.x = player.pos.x + 8;
-								player_shot[i].base.pos.y = player.pos.y;
-								player_shot[i].base.vel.x = 1;
-								player_shot[i].base.speed.x = player_shot[i].base.speed.y = 0.96;
-								temp = 2;
-							}
-							else
-							{
-								player_shot[i].base.pos.x = player.pos.x - 8;
-								player_shot[i].base.pos.y = player.pos.y;
-								player_shot[i].base.vel.x = -1;
-								player_shot[i].base.speed.x = player_shot[i].base.speed.y = 0.96;
-								temp = 3;
-							}
+							player_shot[i].base.pos.x = magic_ball[0].x;
+							player_shot[i].base.pos.y = magic_ball[0].y;
+							player_shot[i].base.vel.x = 0;
+							temp = 1;
+						}
+						else if (temp == 1)
+						{
+							player_shot[i].base.pos.x = magic_ball[1].x;
+							player_shot[i].base.pos.y = magic_ball[1].y;
+							player_shot[i].base.vel.x = 0;
+							temp = 2;
 						}
 						else
 						{
-							if (temp == 0)
-							{
-								player_shot[i].base.pos.x = player.pos.x;
-								player_shot[i].base.pos.y = player.pos.y;
-								player_shot[i].base.vel.x = 0;
-								player_shot[i].base.speed.x = player_shot[i].base.speed.y = 1;
-								temp = 1;
-							}
-							else if (temp == 1)
-							{
-								player_shot[i].base.pos.x = player.pos.x + 16;
-								player_shot[i].base.pos.y = player.pos.y;
-								player_shot[i].base.vel.x = 2;
-								player_shot[i].base.speed.x = player_shot[i].base.speed.y = 12.0 / 13.0;
-								temp = 2;
-							}
-							else
-							{
-								player_shot[i].base.pos.x = player.pos.x - 16;
-								player_shot[i].base.pos.y = player.pos.y;
-								player_shot[i].base.vel.x = -2;
-								player_shot[i].base.speed.x = player_shot[i].base.speed.y = 12.0 / 13.0;
-								temp = 3;
-							}
+							player_shot[i].base.pos.x = magic_ball[2].x;
+							player_shot[i].base.pos.y = magic_ball[2].y;
+							player_shot[i].base.vel.x = 0;
+							//player_shot[i].base.speed.x = player_shot[i].base.speed.y = 12.0 / 13.0;
+							temp = 3;
 						}
+						break;
+
+					case 4:
+						if (temp == 0)
+						{
+							player_shot[i].base.pos.x = player.pos.x;
+							player_shot[i].base.pos.y = player.pos.y;
+							player_shot[i].base.vel.x = 0;
+							player_shot[i].base.sprite.texture = player_shot_gh[2];
+							temp = 1;
+						}
+						else if (temp == 1)
+						{
+							player_shot[i].base.pos.x = magic_ball[0].x;
+							player_shot[i].base.pos.y = magic_ball[0].y;
+							player_shot[i].base.vel.x = 0;
+							player_shot[i].base.sprite.texture = player_shot_gh[1];
+							temp = 2;
+						}
+						else if (temp == 2)
+						{
+							player_shot[i].base.pos.x = magic_ball[1].x;
+							player_shot[i].base.pos.y = magic_ball[1].y;
+							player_shot[i].base.vel.x = 0;
+							player_shot[i].base.sprite.texture = player_shot_gh[1];
+							temp = 3;
+						}
+						else
+						{
+							player_shot[i].base.pos.x = magic_ball[2].x;
+							player_shot[i].base.pos.y = magic_ball[2].y;
+							player_shot[i].base.vel.x = 0;
+							player_shot[i].base.sprite.texture = player_shot_gh[1];
+							//player_shot[i].base.speed.x = player_shot[i].base.speed.y = 12.0 / 13.0;
+							temp = 4;
+						}
+
 						break;
 					}
 					// ------------------------------------------
@@ -438,6 +503,25 @@ void MovePlayerShot(void)
 								break;
 							}
 						}
+						if (shot_power == 4)
+						{
+							if (temp == 1)
+							{
+								continue;
+							}
+							else if (temp == 2)
+							{
+								continue;
+							}
+							else if (temp == 3)
+							{
+								continue;
+							}
+							else
+							{
+								break;
+							}
+						}
 					}
 					//
 				}
@@ -450,9 +534,18 @@ void MovePlayerShot(void)
 	{
 		if (player_shot[i].flag)
 		{
-			player_shot[i].base.pos.x += player_shot[i].base.vel.x * player_shot[i].base.speed.x;
-			player_shot[i].base.pos.y -= player_shot[i].base.vel.y * player_shot[i].base.speed.y;
+			switch (shot_power)
+			{
+			case 4:
+				player_shot[i].base.pos.x += player_shot[i].base.vel.x * player_shot[i].base.speed.x;
+				player_shot[i].base.pos.y -= player_shot[i].base.vel.y * player_shot[i].base.speed.y;
+				break;
 
+			default:
+				player_shot[i].base.pos.x += player_shot[i].base.vel.x * player_shot[i].base.speed.x;
+				player_shot[i].base.pos.y -= player_shot[i].base.vel.y * player_shot[i].base.speed.y;
+				break;
+			}
 			// 画面外に出たらフラグを戻す
 			if ((player_shot[i].base.pos.x < SCREEN_LEFT - 20) ||
 				(player_shot[i].base.pos.x > GAME_SCREEN_RIGHT + 20) ||
@@ -471,8 +564,8 @@ void DrawPlayerShot(void)
 	{
 		if (player_shot[i].flag)
 		{
-			DrawCircle(player_shot[i].base.pos.x, player_shot[i].base.pos.y,
-				PLAYER_SHOT_SIZE, COLOR_BLACK, TRUE);
+			DrawRotaGraph(player_shot[i].base.pos.x, player_shot[i].base.pos.y,
+				1.0, 0.0, player_shot[i].base.sprite.texture, TRUE);
 		}
 	}
 }
@@ -585,6 +678,8 @@ void DrawBom(BOMB type)
 		{
 			bright[0] -= 9;
 		}
+
+
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, bright[0]);
 		SetDrawBright(64, 64, 255);
 		DrawRotaGraph(player.pos.x, player.pos.y, 3.0, bom_rad[0], bom_gh[0], TRUE);
@@ -599,6 +694,28 @@ void DrawBom(BOMB type)
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		break;
 	}
+}
+
+void DrawCutin(void)
+{
+	if (cutin_pos.x == 0 || cutin_pos.y == 0)
+	{
+		cutin_pos.x = (GAME_SCREEN_CENTER_X / 2);
+		cutin_pos.y = (GAME_SCREEN_CENTER_Y / 2 * 3);
+	}
+
+	if (bright[0] <= 0)
+	{
+		cutin_pos = { 0,0 };
+	}
+	else
+	{
+		cutin_pos.x += 0.5;
+	}
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, bright[0]);
+	DrawRotaGraph(cutin_pos.x, cutin_pos.y, 0.5, 0.0, cutin_gh, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 double GetPlayerPosX(void)
@@ -649,4 +766,8 @@ void SetShotPower2(void)
 void SetShotPower3(void)
 {
 	shot_power = 3;
+}
+void SetShotPower4(void)
+{
+	shot_power = 4;
 }

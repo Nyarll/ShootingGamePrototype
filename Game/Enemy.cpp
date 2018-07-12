@@ -268,14 +268,14 @@ void DrawEnemy(void)
 				{
 					temp[i] = 1;
 				}
-				DrawGraph(enemy[i].x, enemy[i].y,enemy_gh[temp[i]], TRUE);
+				DrawRotaGraph(enemy[i].x, enemy[i].y, 1.0, 0.0, enemy_gh[temp[i]], TRUE);
 				enemy_count[i]++;
 				break;
 			}
 		}
 	}
 
-	DrawDeadEffect();
+	DrawEnemyDeadEffect();
 }
 
 double GetEnemyShotSpeedY(void)
@@ -315,7 +315,7 @@ BOOL GetEnemyShotFlag(int i)
 	return enemy_shot[i].flag;
 }
 
-void DrawDeadEffect(void)
+void DrawEnemyDeadEffect(void)
 {
 	int i;
 

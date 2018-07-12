@@ -69,5 +69,5 @@ BOOL GetEnemyShotFlag(int i);
 double GetEnemyShotSpeedY(void);
 double GetEnemyShotVelY(void);
 
-void DrawDeadEffect(void);
+void DrawEnemyDeadEffect(void);
 void SetDeadEffect(int index);

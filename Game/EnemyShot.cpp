@@ -299,6 +299,13 @@ void DrawEnemyShot(int o)
 				DrawRotaGraph(enemy_shot[i].base.pos.x, enemy_shot[i].base.pos.y, 1.4, 0, enemy_shot[i].base.sprite.texture, TRUE);
 				break;
 
+			case 1:
+				DrawRotaGraph(enemy_shot[i].base.pos.x, enemy_shot[i].base.pos.y, 1.4, 0, enemy_shot[i].base.sprite.texture, TRUE);
+				break;
+
+			case 2:
+				DrawRotaGraph(enemy_shot[i].base.pos.x, enemy_shot[i].base.pos.y, 1.4, 0, enemy_shot[i].base.sprite.texture, TRUE);
+				break;
 
 			}
 		}
@@ -309,8 +316,16 @@ void SetEnemyShotGraph(int e_index, int j)
 {
 	switch (enemy[e_index].shot_type)
 	{
-	case 0:	// ÉNÉäÉXÉ^Éãå^
+	case 0:	// êØå^
 		enemy_shot[j].base.sprite.texture = enemy_shot_graph[322];
+		break;
+
+	case 1:	// ê‘Ç¢Åú
+		enemy_shot[j].base.sprite.texture = enemy_shot_graph[99];
+		break;
+
+	case 2:
+		enemy_shot[j].base.sprite.texture = enemy_shot_graph[108];
 		break;
 	}
 }

@@ -1,3 +1,4 @@
+#include <math.h>
 #include "PlayScene.h"
 #include "Player.h"
 #include "Enemy.h"
@@ -84,15 +85,13 @@ void UpdatePlay(void)
 }
 void RenderPlay(void)
 {
-	int i;
+
 	SetDrawBright(255, 255, 255);
 
 	DrawGameObject();
 
-	for (i = 0; i < GetEnemyNum(); i++)
-	{
-		DrawEnemyShot(i);
-	}
+	
+	
 	DrawBox(GAME_SCREEN_RIGHT, 0, SCREEN_RIGHT, SCREEN_BOTTOM, COLOR_BLACK, TRUE);
 	DrawBox(GAME_SCREEN_RIGHT, 0, GAME_SCREEN_RIGHT + 10, GAME_SCREEN_BOTTOM, COLOR_WHITE, TRUE);
 
@@ -108,6 +107,7 @@ void FinalPlay(void)
 
 void DrawGameObject(void)
 {
+	int i;
 	DrawBack();
 
 	if (bom_flag)
@@ -119,8 +119,15 @@ void DrawGameObject(void)
 	DrawPlayerShot();
 	DrawItem();
 	DrawGraze();
+	DrawCutin();
 	DrawPlayer();
+	MoveMagicCircle();
 	DrawEnemy();
+
+	for (i = 0; i < GetEnemyNum(); i++)
+	{
+		DrawEnemyShot(i);
+	}
 }
 
 void InitStage(void)
@@ -275,6 +282,10 @@ void UseDebug(void)
 	{
 		SetShotPower3();
 	}
+	else if (GetInputKeyData(KEY_INPUT_4) == 1)
+	{
+		SetShotPower4();
+	}
 
 	if ((GetInputKeyData(KEY_INPUT_D)) && (!GetInputKeyOldData(KEY_INPUT_D)))
 	{
@@ -290,8 +301,26 @@ void UseDebug(void)
 }
 void DrawDebug(void)
 {
+	double px1, px2, px3;
+	double py1, py2, py3;
+	static DegRad pdr1 = { 270,0 }, pdr2 = { 30,0 }, pdr3 = { 150,0 };
+
+	pdr1.rad = DEG_TO_RAD(pdr1.deg);
+	pdr2.rad = DEG_TO_RAD(pdr2.deg);
+	pdr3.rad = DEG_TO_RAD(pdr3.deg);
+
+	px1 = (GetPlayerPosX() + (3 * (PLAYER_SIZE / 4)) * cos(pdr1.rad));
+	px2 = (GetPlayerPosX() + (3 * (PLAYER_SIZE / 4)) * cos(pdr2.rad));
+	px3 = (GetPlayerPosX() + (3 * (PLAYER_SIZE / 4)) * cos(pdr3.rad));
+
+	py1 = (GetPlayerPosY() + (3 * (PLAYER_SIZE / 4)) * sin(pdr1.rad));
+	py2 = (GetPlayerPosY() + (3 * (PLAYER_SIZE / 4)) * sin(pdr2.rad));
+	py3 = (GetPlayerPosY() + (3 * (PLAYER_SIZE / 4)) * sin(pdr3.rad));
+
 	if (debug_flag)
 	{
+		DrawBox(GAME_SCREEN_RIGHT, 0, SCREEN_RIGHT, SCREEN_BOTTOM, COLOR_BLACK, TRUE);
+		DrawBox(GAME_SCREEN_RIGHT, 0, GAME_SCREEN_RIGHT + 10, GAME_SCREEN_BOTTOM, COLOR_WHITE, TRUE);
 
 		DrawFormatString((SCREEN_CENTER_X + 200), 0, COLOR_WHITE, "Now : %d", GetGameCount());
 		DrawFormatString((SCREEN_CENTER_X + 140), 20, COLOR_WHITE, "player_pos_x : %.1lf", GetPlayerPosX());
@@ -308,6 +337,11 @@ void DrawDebug(void)
 
 		// グレイズ判定の表示
 		DrawCircle(GetPlayerPosX(), GetPlayerPosY(), (PLAYER_SIZE / 4), COLOR_PURPLE, FALSE, 2);
+
+		DrawCircle(GetPlayerPosX(), GetPlayerPosY(), 3 * (PLAYER_SIZE / 4), COLOR_BLACK, FALSE, 2);
+		DrawCircle(px1, py1, 3, COLOR_RED, TRUE, 2);
+		DrawCircle(px2, py2, 3, COLOR_RED, TRUE, 2);
+		DrawCircle(px3, py3, 3, COLOR_RED, TRUE, 2);
 
 		//
 		DrawBox((GetPlayerPosX() - PLAYER_SIZE / 4), (GetPlayerPosY() - PLAYER_SIZE * 4), (GetPlayerPosX() + PLAYER_SIZE / 4), GetPlayerPosY(), COLOR_RED, FALSE);
