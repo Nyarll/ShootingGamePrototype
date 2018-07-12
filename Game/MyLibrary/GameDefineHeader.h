@@ -8,9 +8,6 @@
 #define DEG_TO_RAD(DEG)	((DEG) * (PI / 180.0))
 #define RAD_TO_DEG(RAD)	((RAD) * (180.0 / PI))
 
-// <システム> ----------------------------------------------------------
-#define GAME_TITLE "Shooting Game Prototype"   // ゲームタイトル
-
 
 // <画面> --------------------------------------------------------------
 #define SCREEN_WIDTH    (1000)                  // 画面の幅[pixel]

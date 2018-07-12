@@ -21,7 +21,7 @@ int s[256];	// î≠éÀíÜÇÃíeÇÃêî
 double rad[ENEMY_SHOT_NUM];
 
 HGRP dead_effect;
-BOOL effect_flag[256];
+BOOL enemy_dead_effect_flag[256];
 double effect_rad[256];
 Vector2D effect_pos[256];
 int effect_cnt[256];
@@ -78,7 +78,7 @@ void InitEnemy(int stage)
 
 		effect_rad[i] = 0;
 		effect_pos[i] = { 0,0 };
-		effect_flag[i] = FALSE;
+		enemy_dead_effect_flag[i] = FALSE;
 	}
 
 	fclose(fp);
@@ -228,17 +228,16 @@ void MoveEnemy(void)
 
 	for (i = 0; i < enemy_num; i++)
 	{
-		if (effect_flag[i])
+		if (enemy_dead_effect_flag[i])
 		{
 			effect_cnt[i]++;
 
 			if (effect_cnt[i] > 10)
 			{
-				effect_flag[i] = 0;
 				effect_rad[i] = 0;
 				effect_deg[i] = 0;
 				effect_pos[i] = { 0,0 };
-				effect_flag[i] = FALSE;
+				enemy_dead_effect_flag[i] = FALSE;
 			}
 		}
 	}
@@ -321,7 +320,7 @@ void DrawEnemyDeadEffect(void)
 
 	for (i = 0; i < GetEnemyNum(); i++)
 	{
-		if (effect_flag[i])
+		if (enemy_dead_effect_flag[i])
 		{
 			DrawRotaGraph(effect_pos[i].x, effect_pos[i].y, 0.5, effect_rad[i], dead_effect, TRUE);
 			effect_rad[i] = DEG_TO_RAD(effect_deg[i]);
@@ -333,5 +332,5 @@ void SetDeadEffect(int index)
 {
 	effect_pos[index].x = enemy[index].x;
 	effect_pos[index].y = enemy[index].y;
-	effect_flag[index] = TRUE;
+	enemy_dead_effect_flag[index] = TRUE;
 }

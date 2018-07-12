@@ -25,6 +25,9 @@ void DrawBom(BOMB type);
 
 void DrawCutin(void);
 
+void DrawPlayerDeadEffect(void);
+void SetPlayerDeadEffectFlag(void);
+
 double GetPlayerPosX(void);
 double GetPlayerPosY(void);
 

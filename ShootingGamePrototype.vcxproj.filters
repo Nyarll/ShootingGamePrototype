@@ -130,6 +130,9 @@
     <ClCompile Include="Game\Boss.cpp">
       <Filter>ゲーム\PlayScene\Boss</Filter>
     </ClCompile>
+    <ClCompile Include="Game\BossShot.cpp">
+      <Filter>ゲーム\PlayScene\Boss</Filter>
+    </ClCompile>
   </ItemGroup>
   <!-- ヘッダファイル -->
   <ItemGroup>

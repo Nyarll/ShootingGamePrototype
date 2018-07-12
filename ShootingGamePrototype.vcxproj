@@ -93,6 +93,7 @@
   <ItemGroup>
     <ClCompile Include="Game\Back.cpp" />
     <ClCompile Include="Game\Boss.cpp" />
+    <ClCompile Include="Game\BossShot.cpp" />
     <ClCompile Include="Game\Defines.cpp" />
     <ClCompile Include="Game\Enemy.cpp" />
     <ClCompile Include="Game\EnemyMovePattern.cpp" />

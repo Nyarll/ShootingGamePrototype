@@ -224,6 +224,7 @@ void EnemyShot_PlayerCollision(void)
 				if (CircleCollision(enemy_shot[i].r, PLAYER_R, enemy_shot[i].base.pos.x, GetPlayerPosX(), enemy_shot[i].base.pos.y, GetPlayerPosY()))
 				{
 					SetPlayerDeadFlag();
+					SetPlayerDeadEffectFlag();
 					player_life -= 1;
 					player_bom = 3;
 					break;

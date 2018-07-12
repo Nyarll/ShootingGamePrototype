@@ -32,7 +32,9 @@ Shot bom_shot[BOM_SHOT_NUM];
 BOOL bom_flag;
 
 static Vector2D cutin_pos;
+static Vector2D cutin_bar_pos[2];
 static HGRP cutin_gh;
+static HGRP cutin_bar_gh[2];
 static double cutin_bright;
 
 static HGRP bom_gh[5];
@@ -45,6 +47,10 @@ static int bom_count;
 static int dead_count;
 
 static BOOL dead_flag;
+static BOOL player_dead_effect_flag;
+static HGRP player_dead_effect_gh;
+static int dead_effect_cnt;
+static double dead_effect_deg;
 
 void InitPlayer(void)
 {
@@ -67,6 +73,10 @@ void InitPlayer(void)
 	dead_flag = FALSE;
 	dead_count = 0;
 
+	player_dead_effect_flag = FALSE;
+
+	player_dead_effect_gh = LoadGraph("Resources/Textures/dead_effect.png");
+
 	player_collision = LoadGraph("Resources/Textures/atari.png");
 
 	LoadDivGraph("Resources/Textures/huto.png", 12, 4, 3, 48, 48, player_tex);
@@ -78,6 +88,8 @@ void InitPlayer(void)
 	bom_gh[4] = LoadGraph("Resources/Textures/MagicCircle5.png");
 
 	cutin_gh = LoadGraph("Resources/Textures/cutin.png");
+	cutin_bar_gh[0] = LoadGraph("Resources/Textures/bom_title0.png");	// â°
+	cutin_bar_gh[1] = LoadGraph("Resources/Textures/bom_title1.png");	// èc
 
 	for (i = 0; i < BOM_SHOT_NUM; i++)
 	{
@@ -202,6 +214,17 @@ void MovePlayer(void)
 	{
 		player.pos.y = GAME_SCREEN_BOTTOM - PLAYER_SIZE / 2;
 	}
+
+	if (player_dead_effect_flag)
+	{
+		dead_effect_cnt++;
+		if (dead_effect_cnt > 10)
+		{
+			player_dead_effect_flag = FALSE;
+			dead_effect_cnt = 0;
+			dead_effect_deg = 0;
+		}
+	}
 }
 void DrawPlayer(void)
 {
@@ -215,6 +238,7 @@ void DrawPlayer(void)
 
 	double p_rota = 1.5;
 
+	DrawPlayerDeadEffect();
 
 	if (!dead_flag)
 	{
@@ -698,24 +722,67 @@ void DrawBom(BOMB type)
 
 void DrawCutin(void)
 {
+	static int bar_bright = 0;
+
 	if (cutin_pos.x == 0 || cutin_pos.y == 0)
 	{
 		cutin_pos.x = (GAME_SCREEN_CENTER_X / 2);
 		cutin_pos.y = (GAME_SCREEN_CENTER_Y / 2 * 3);
+		cutin_bar_pos[0] = { cutin_pos.x,cutin_pos.y + 80 };
+		cutin_bar_pos[1] = { cutin_pos.x + 300,cutin_pos.y };
+	}
+
+	if (bom_deg[0] < 90)
+	{
+		bar_bright += 9;
+	}
+	if (bom_deg[0] >= 90)
+	{
+		bar_bright -= 9;
 	}
 
 	if (bright[0] <= 0)
 	{
 		cutin_pos = { 0,0 };
+		bar_bright = 0;
 	}
 	else
 	{
 		cutin_pos.x += 0.5;
+		cutin_bar_pos[0].x -= 0.5;
+		cutin_bar_pos[1].y += 0.5;
 	}
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, bright[0]);
 	DrawRotaGraph(cutin_pos.x, cutin_pos.y, 0.5, 0.0, cutin_gh, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, bar_bright);
+	DrawRotaGraph(cutin_bar_pos[0].x + 300, cutin_bar_pos[0].y, 2.0, 0.0, cutin_bar_gh[0], TRUE);
+	DrawRotaGraph(cutin_bar_pos[1].x, cutin_bar_pos[1].y - 200, 2.0, 0.0, cutin_bar_gh[1], TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+void DrawPlayerDeadEffect(void)
+{
+	static Vector2D p_pos = { 0,0 };
+
+	if (player_dead_effect_flag)
+	{
+		if (p_pos.x == 0)
+		{
+			p_pos = player.pos;
+		}
+		DrawRotaGraph(p_pos.x, p_pos.y, 0.75, DEG_TO_RAD(dead_effect_deg), player_dead_effect_gh, TRUE);
+		dead_effect_deg += 20;
+		
+	}
+	else
+	{
+		p_pos = { 0,0 };
+	}
+}
+void SetPlayerDeadEffectFlag(void)
+{
+	player_dead_effect_flag = TRUE;
 }
 
 double GetPlayerPosX(void)
