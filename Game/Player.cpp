@@ -3,6 +3,7 @@
 #include <math.h>
 #include "Player.h"
 #include "Enemy.h"
+#include "Boss.h"
 #include "Score.h"
 #include "Item.h"
 #include "Defines.h"
@@ -386,7 +387,7 @@ void MovePlayerShot(void)
 {
 	int i;
 	int temp = 0;
-	
+
 
 	if (!dead_flag)
 	{
@@ -673,6 +674,41 @@ void MoveBom(BOMB type)
 				}
 			}
 		}
+		if (GetBossFlag())
+		{
+			if (CircleCollision(BOSS_SIZE, (127 * 3), GetBossPosX(), player.pos.x, GetBossPosY(), player.pos.y))
+			{
+				BossDamage(1);
+			}
+			
+		}
+
+		if (GetBossFlag())
+		{
+			for (j = 0; j < BOSS_SHOT_NUM; j++)
+			{
+				for (i = 0; i < BOM_SHOT_NUM; i++)
+				{
+					if (boss_shot[j].flag)
+					{
+						if (CircleCollision(boss_shot[j].r, bom_shot[i].r, boss_shot[j].pos.x, bom_shot[i].base.pos.x, boss_shot[j].pos.y, bom_shot[i].base.pos.y))
+						{
+							SetItemFlag(0, boss_shot[j].pos.x, boss_shot[j].pos.y);
+							boss_shot[j].flag = FALSE;
+						}
+					}
+				}
+
+				if (CircleCollision(boss_shot[j].r, (127 * 3), boss_shot[j].pos.x, player.pos.x, boss_shot[j].pos.y, player.pos.y))
+				{
+					if (boss_shot[j].flag)
+					{
+						SetItemFlag(0, boss_shot[j].pos.x, boss_shot[j].pos.y);
+						boss_shot[j].flag = FALSE;
+					}
+				}
+			}
+		}
 		break;
 	}
 	if (bom_count > 180)
@@ -773,7 +809,7 @@ void DrawPlayerDeadEffect(void)
 		}
 		DrawRotaGraph(p_pos.x, p_pos.y, 0.75, DEG_TO_RAD(dead_effect_deg), player_dead_effect_gh, TRUE);
 		dead_effect_deg += 20;
-		
+
 	}
 	else
 	{
@@ -810,6 +846,11 @@ int GetPlayerShotPosX(int i)
 int GetPlayerShotPosY(int i)
 {
 	return player_shot[i].base.pos.y;
+}
+
+void SetPlayerShotFALSE(int i)
+{
+	player_shot[i].flag = FALSE;
 }
 
 int GetShotPower(void)

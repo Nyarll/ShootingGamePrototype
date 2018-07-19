@@ -259,6 +259,7 @@ void MoveEnemyShot(void)
 
 			}
 
+			// âÊñ äOÇ…èoÇΩÇÁ
 			if ((enemy_shot[i].base.pos.x < (GAME_SCREEN_LEFT - 20)) ||
 				(enemy_shot[i].base.pos.x > (GAME_SCREEN_RIGHT + 20)) ||
 				(enemy_shot[i].base.pos.y < (GAME_SCREEN_TOP - 20)) ||
@@ -292,22 +293,10 @@ void DrawEnemyShot(int o)
 	{
 		if (enemy_shot[i].flag)
 		{
-			switch (enemy[o].shot_type)
-			{
-			case 0:
-				//DrawCircle(enemy_shot[i].base.pos.x, enemy_shot[i].base.pos.y, enemy_shot[i].r, COLOR_PURPLE, TRUE);
-				DrawRotaGraph(enemy_shot[i].base.pos.x, enemy_shot[i].base.pos.y, 1.4, 0, enemy_shot[i].base.sprite.texture, TRUE);
-				break;
 
-			case 1:
-				DrawRotaGraph(enemy_shot[i].base.pos.x, enemy_shot[i].base.pos.y, 1.4, 0, enemy_shot[i].base.sprite.texture, TRUE);
-				break;
+			//DrawCircle(enemy_shot[i].base.pos.x, enemy_shot[i].base.pos.y, enemy_shot[i].r, COLOR_PURPLE, TRUE);
+			DrawRotaGraph(enemy_shot[i].base.pos.x, enemy_shot[i].base.pos.y, 1.4, 0, enemy_shot[i].base.sprite.texture, TRUE);
 
-			case 2:
-				DrawRotaGraph(enemy_shot[i].base.pos.x, enemy_shot[i].base.pos.y, 1.4, 0, enemy_shot[i].base.sprite.texture, TRUE);
-				break;
-
-			}
 		}
 	}
 }
@@ -1248,7 +1237,7 @@ void EnemyShotPattern14(int i, int num)
 			}
 		}
 	}
-	if(shot_count[i] > 360)
+	if (shot_count[i] > 360)
 	{
 		flag = FALSE;
 	}
@@ -1277,7 +1266,7 @@ void EnemyShotPattern15(int i)
 
 				enemy_shot[j].base.pos.x = enemy[i].x;
 				enemy_shot[j].base.pos.y = enemy[i].y;
-				
+
 				SetEnemyShotGraph(i, j);
 
 				num++;

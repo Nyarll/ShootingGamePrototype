@@ -37,6 +37,8 @@ BOOL GetPlayerDeadFlag(void);
 int GetPlayerShotPosX(int i);
 int GetPlayerShotPosY(int i);
 
+void SetPlayerShotFALSE(int i);
+
 int GetShotPower(void);
 
 void SetPlayerDeadFlag(void);

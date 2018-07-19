@@ -18,6 +18,8 @@ extern double rad[ENEMY_SHOT_NUM];
 extern double enemy_angle[256];
 extern Vector2D enemy_vel[256];
 
+extern HGRP enemy_shot_graph[384];
+
 void InitEnemy(int stage);		// エネミーの初期化
 void FileStreamEnemy(const TCHAR *file_name);	// エネミーデータの読み込み
 void SetEnemyNum(int stage);	// エネミーの数の設定

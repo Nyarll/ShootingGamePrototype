@@ -17,6 +17,9 @@ void EnemyShot_PlayerCollision(void);
 void GrazeCollision(void);
 void Player_ItemCollision(void);
 
+void PlayerShot_BossCollision(void);
+void BossShot_PlayerCollison(void);
+
 void DrawGameObject(void);
 
 // デバッグ用

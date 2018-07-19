@@ -46,7 +46,7 @@
 #define ENEMY_TYPE_NUM 1
 
 // ステージごとのエネミーの数
-#define ENEMY_NUM1 (1)
+#define ENEMY_NUM1 (0)
 #define ENEMY_NUM2 (5)
 
 typedef int LIFE;

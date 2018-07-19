@@ -2,6 +2,7 @@
 #include "PlayScene.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Boss.h"
 #include "Back.h"
 #include "Score.h"
 #include "Item.h"
@@ -38,6 +39,7 @@ void InitPlay(void)
 	InitScore();
 	InitItem();
 	InitGraze();
+	InitBoss();
 }
 void UpdatePlay(void)
 {
@@ -58,6 +60,7 @@ void UpdatePlay(void)
 		InitBomShot();
 	}
 	MoveEnemy();
+	MoveBoss();
 
 	for (i = 0; i < GetEnemyNum(); i++)
 	{
@@ -70,6 +73,8 @@ void UpdatePlay(void)
 	EnemyShot_PlayerCollision();
 	GrazeCollision();
 	Player_ItemCollision();
+
+	PlayerShot_BossCollision();
 
 	MoveItem();
 	MoveGraze();
@@ -90,8 +95,8 @@ void RenderPlay(void)
 
 	DrawGameObject();
 
-	
-	
+
+
 	DrawBox(GAME_SCREEN_RIGHT, 0, SCREEN_RIGHT, SCREEN_BOTTOM, COLOR_BLACK, TRUE);
 	DrawBox(GAME_SCREEN_RIGHT, 0, GAME_SCREEN_RIGHT + 10, GAME_SCREEN_BOTTOM, COLOR_WHITE, TRUE);
 
@@ -116,13 +121,14 @@ void DrawGameObject(void)
 	}
 
 	SetDrawBright(255, 255, 255);
-	DrawPlayerShot();
-	DrawItem();
 	DrawGraze();
 	DrawCutin();
+	DrawItem();
 	DrawPlayer();
 	MoveMagicCircle();
 	DrawEnemy();
+	DrawBoss();
+	DrawPlayerShot();
 
 	for (i = 0; i < GetEnemyNum(); i++)
 	{
@@ -194,7 +200,7 @@ void PlayerShot_EnemyCollision(void)
 	for (i = 0; i < PLAYER_SHOT_NUM; i++)
 	{
 		for (j = 0; j < GetEnemyNum(); j++)
-
+		{
 			if (GetPlayerShotFlag(i))
 			{
 				if (GetEnemyDeadFlag(j))
@@ -209,6 +215,7 @@ void PlayerShot_EnemyCollision(void)
 
 				}
 			}
+		}
 	}
 }
 void EnemyShot_PlayerCollision(void)
@@ -267,6 +274,29 @@ void Player_ItemCollision(void)
 			}
 		}
 	}
+}
+
+void PlayerShot_BossCollision(void)
+{
+	int i;
+	for (i = 0; i < PLAYER_SHOT_NUM; i++)
+	{
+		if (GetPlayerShotFlag(i))
+		{
+			if (GetBossFlag())
+			{
+				if (CircleCollision(PLAYER_SHOT_SIZE, BOSS_SIZE, GetPlayerShotPosX(i), GetBossPosX(), GetPlayerShotPosY(i), GetBossPosY()))
+				{
+					SetPlayerShotFALSE(i);
+					BossDamage(1);
+				}
+			}
+		}
+	}
+}
+void BossShot_PlayerCollison(void)
+{
+
 }
 
 void UseDebug(void)
