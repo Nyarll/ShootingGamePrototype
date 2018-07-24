@@ -83,7 +83,7 @@ void UpdatePlay(void)
 	UseDebug();
 
 	GameOverCheck();
-	StageClearCheck();
+	//StageClearCheck();
 
 	UpdateKeyOld();
 

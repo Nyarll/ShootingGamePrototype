@@ -12,7 +12,6 @@ HGRP boss_back;
 int boss_intime;
 int boss_movecount;
 int boss_moveflag;
-BOOL boss_shotflag;
 
 BOSS_SHOT boss_shot[BOSS_SHOT_NUM];
 
@@ -26,6 +25,8 @@ BOSS_SHOT boss_shot[BOSS_SHOT_NUM];
 void InitBoss(void)
 {
 	srand((unsigned int)time(NULL));
+
+	memset(&boss, 0, sizeof(BOSS));
 
 	boss.flag = FALSE;
 	boss.pos = { GAME_SCREEN_CENTER_X,-20 };
@@ -42,12 +43,14 @@ void InitBoss(void)
 	boss_movecount = 300;
 	boss_moveflag = 0;
 
-	boss_shotflag = FALSE;
+	boss.shot_flag = FALSE;
 
 	boss.hp = MAX_BOSS_HP;
 	boss.life = 10;
 
 	boss_back = LoadGraph("Resources/Textures/bossback3.png");
+
+	InputPhy(60);
 
 	InitBossShot();
 }
@@ -73,17 +76,18 @@ void MoveBoss(void)
 		else
 		{
 			boss.cnt = 0;
-			/*if (boss.cnt > 400)
-			{
-				boss.cnt = 0;
-				boss.shot_pattern = 0;
-			}*/
 		}
 	}
 	boss.pos.x += boss.vel.x;
 	boss.pos.y += boss.vel.y;
 
 	boss.cnt++;
+
+	if (boss.hp <= 0)
+	{
+		boss.life -= 1;
+		boss.shot_cnt = 0;
+	}
 
 #ifdef DEBUG
 	if (boss.hp <= 0)
@@ -92,19 +96,28 @@ void MoveBoss(void)
 	}
 #endif
 
-	MoveBossShot();
+	if (boss.shot_flag)
+	{
+		MoveBossShot();
+	}
 }
 void MoveBossManager(void)
 {
+	static int inicnt = 0;
 	switch (boss.move_pattern)
 	{
 	case 0:
-		BossMovePattern0();
 		break;
 
 	case 1:
-		BossMovePattern1();
+		//BossMovePattern1();
+		
 		break;
+	}
+
+	if (boss.phy.flag)
+	{
+		CalcPhy();
 	}
 }
 void ShotBossManager(void)
@@ -116,9 +129,24 @@ void ShotBossManager(void)
 		break;
 
 	case 1:
-		BossShotPattern1();
+		//BossShotPattern1();
+		BossSpecialShot0();
 		break;
 	}
+	boss.shot_flag = TRUE;
+
+	switch (boss.life)	// ボス残機で行動の変化
+	{
+	case 10:
+		boss.shot_pattern = 0;
+		break;
+
+	case 9:
+		boss.shot_pattern = 1;
+		break;
+	}
+
+	//
 }
 void DrawBoss(void)
 {
@@ -180,6 +208,67 @@ double rang(int deg, int range)
 	rad = DEG_TO_RAD(angle);
 
 	return rad;
+}
+
+//物理的計算をさせる登録をする(指定時間tで定位置に戻す)
+void InputPhy(int t)   //t=移動にかける時間
+{
+	double ymax_x, ymax_y;
+
+	if (t == 0)
+	{
+		t = 1;
+	}
+
+	boss.phy.flag = TRUE;                //登録オン
+	boss.phy.cnt = 0;                 //カウンタ初期化
+	boss.phy.set_t = t;               //移動にかける時間をセット
+	ymax_x = boss.pos.x - BOSS_POS_X;       //移動したい水平距離
+	boss.phy.v0x = 2 * ymax_x / t;        //水平成分の初速度
+	boss.phy.ax = 2 * ymax_x / (t * t);    //水平成分の加速度
+	boss.phy.prex = boss.pos.x;           //初期x座標
+	ymax_y = boss.pos.y - BOSS_POS_Y;       //移動したい鉛直距離
+	boss.phy.v0y = 2 * ymax_y / t;        //鉛直成分の初速度
+	boss.phy.ay = 2 * ymax_y / (t * t);    //鉛直成分の加速度
+	boss.phy.prey = boss.pos.y;           //初期y座標
+}
+
+//物理的計算を点と距離指定で登録をする(指定時間tで定位置に戻す)
+void InputPhyPos(double x, double y, int t)     //t=移動にかける時間
+{
+	double ymax_x, ymax_y;
+
+	if (t == 0)
+	{
+		t = 1;
+	}
+
+	boss.phy.flag = TRUE;//登録オン
+	boss.phy.cnt = 0;//カウンタ初期化
+	boss.phy.set_t = t;//移動にかける時間をセット
+	ymax_x = boss.pos.x - x;//移動したい水平距離
+	boss.phy.v0x = 2 * ymax_x / t;//水平成分の初速度
+	boss.phy.ax = 2 * ymax_x / (t * t);//水平成分の加速度
+	boss.phy.prex = boss.pos.x;//初期x座標
+	ymax_y = boss.pos.y - y;//移動したい鉛直距離
+	boss.phy.v0y = 2 * ymax_y / t;//鉛直成分の初速度
+	boss.phy.ay = 2 * ymax_y / (t * t);//鉛直成分の加速度
+	boss.phy.prey = boss.pos.y;//初期y座標
+}
+
+//物理的キャラクタ移動計算
+void CalcPhy(void)
+{
+	double t = boss.phy.cnt;
+
+	boss.pos.x = boss.phy.prex - ((boss.phy.v0x * t) - 0.5 * boss.phy.ax * t * t);//現在いるべきx座標計算
+	boss.pos.y = boss.phy.prey - ((boss.phy.v0y * t) - 0.5 * boss.phy.ay * t * t);//現在いるべきy座標計算
+	boss.phy.cnt++;
+
+	if (boss.phy.cnt >= boss.phy.set_t)//移動にかける時間分になったら
+	{
+		boss.phy.flag = FALSE;//オフ
+	}
 }
 
 double BossPlayerATAN(void)

@@ -64,3 +64,23 @@ void BossMovePattern2(void)
 	boss.vel.x = cos(boss.rad) * boss.spd.x;
 	boss.vel.y = sin(boss.rad) * boss.spd.y;
 }
+
+// 移動したい範囲, 移動にかかる時間, ？
+BOOL BossMoveRandom(double x1, double y1, double x2, double y2, double dist, int t)
+{
+	int i = 0;
+	double x, y, angle;
+	for (i = 0; i<1000; i++)
+	{
+		x = boss.pos.x, y = boss.pos.y;	//今のボスの位置をセット
+		angle = rang(360, 0);	//適当に向かう方向を決める
+		x += cos(angle) * dist;	//そちらに移動させる
+		y += sin(angle) * dist;
+		if (x1 <= x && x <= x2 && y1 <= y && y <= y2)	//その点が移動可能範囲なら
+		{
+			InputPhyPos(x, y, t);       // 移動先を決定
+			return TRUE;
+		}
+	}
+	return FALSE;
+}

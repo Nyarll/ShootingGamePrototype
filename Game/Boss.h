@@ -11,23 +11,32 @@
 
 #define BOSS_SIZE 30
 
+typedef struct {
+	int flag, cnt, set_t;
+	double ax, v0x, ay, v0y, vx, vy, prex, prey;
+}Phy;
+
 typedef struct
 {
 	Vector2D pos;
 	Vector2D vel;
 	Vector2D spd;
 	BOOL flag;
+	BOOL shot_flag;
 
 	int move_pattern;
 	int shot_pattern;
 
 	int shot_wait;
 	int cnt;
+	int shot_cnt;
 
 	int hp;
 	int life;
 
 	double rad;
+
+	Phy phy;
 
 	HGRP tex;
 }BOSS;
@@ -71,20 +80,25 @@ void BossDamage(int damage);
 
 double rang(int deg, int range);
 
-// 
-
 void BossMovePattern0(void);		// 出現動作
 void BossMovePattern1(void);		// 通常動作 / 待機
 void BossMovePattern2(void);
 
-//
+BOOL BossMoveRandom(double x1, double y1, double x2, double y2, double dist, int t);
+
+void InputPhy(int t);
+void InputPhyPos(double x, double y, int t);
+void CalcPhy(void);
 
 void InitBossShot(void);
 void MoveBossShot(void);
 void DrawBossShot(void);
 
+int SearchBossShot(void);
+
 void BossShotPattern0(void);		// 円形ショット
 void BossShotPattern1(void);		// 
 
+void BossSpecialShot0(void);
 
 double BossPlayerATAN(void);
