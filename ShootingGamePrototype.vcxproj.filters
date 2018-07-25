@@ -66,6 +66,9 @@
     <Filter Include="ゲーム\PlayScene\Item">
       <UniqueIdentifier>{c23ebfb0-e870-4c63-b902-850b8af9b185}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ゲーム\ResultScene">
+      <UniqueIdentifier>{01735602-8ad9-43fe-a90e-7c1d25f3e41c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <!-- ソースファイル -->
   <ItemGroup>
@@ -135,6 +138,9 @@
     </ClCompile>
     <ClCompile Include="Game\BossMovePattern.cpp">
       <Filter>ゲーム\PlayScene\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Result.cpp">
+      <Filter>ゲーム\ResultScene</Filter>
     </ClCompile>
   </ItemGroup>
   <!-- ヘッダファイル -->
@@ -207,6 +213,9 @@
     </ClInclude>
     <ClInclude Include="Game\Boss.h">
       <Filter>ゲーム\PlayScene\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Result.h">
+      <Filter>ゲーム\ResultScene</Filter>
     </ClInclude>
   </ItemGroup>
   <!-- リソースファイル -->

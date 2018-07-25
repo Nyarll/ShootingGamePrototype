@@ -1,4 +1,5 @@
 #include <math.h>
+#include "SceneManager.h"
 #include "PlayScene.h"
 #include "Player.h"
 #include "Enemy.h"
@@ -69,18 +70,21 @@ void UpdatePlay(void)
 
 	MoveEnemyShot();
 
+	/**
 	PlayerShot_EnemyCollision();
 	EnemyShot_PlayerCollision();
 	GrazeCollision();
-	Player_ItemCollision();
-
+	
 	PlayerShot_BossCollision();
+	BossShot_PlayerCollison();
+	/**/
+	Player_ItemCollision();
 
 	MoveItem();
 	MoveGraze();
 	UpdateScore();
 
-	UseDebug();
+	//UseDebug();
 
 	GameOverCheck();
 	//StageClearCheck();
@@ -102,7 +106,7 @@ void RenderPlay(void)
 
 	DrawScore();
 
-	DrawDebug();
+	//DrawDebug();
 }
 
 void FinalPlay(void)
@@ -187,8 +191,10 @@ void GameOverCheck(void)
 {
 	if (player_life < 0)
 	{
-		MSG("残機が無くなりました");
-		EXIT;
+		//MSG("残機が無くなりました");
+		//EXIT;
+
+		SetResultScene();
 	}
 }
 
@@ -258,6 +264,21 @@ void GrazeCollision(void)
 			}
 		}
 	}
+
+	if (!GetPlayerDeadFlag())
+	{
+		for (i = 0; i < BOSS_SHOT_NUM; i++)
+		{
+			if (boss_shot[i].flag)
+			{
+				if (CircleCollision(boss_shot[i].r, (PLAYER_SIZE / 4), boss_shot[i].pos.x, GetPlayerPosX(), boss_shot[i].pos.y, GetPlayerPosY()))
+				{
+					SetGrazeFlag();
+					break;
+				}
+			}
+		}
+	}
 }
 void Player_ItemCollision(void)
 {
@@ -296,7 +317,25 @@ void PlayerShot_BossCollision(void)
 }
 void BossShot_PlayerCollison(void)
 {
+	int i;
 
+	if (!GetPlayerDeadFlag())
+	{
+		for (i = 0; i < BOSS_SHOT_NUM; i++)
+		{
+			if (GetBossShotFlag(i))
+			{
+				if (CircleCollision(PLAYER_R, boss_shot[i].r, GetPlayerPosX(), boss_shot[i].pos.x, GetPlayerPosY(), boss_shot[i].pos.y))
+				{
+					SetPlayerDeadFlag();
+					SetPlayerDeadEffectFlag();
+					player_life -= 1;
+					player_bom = 3;
+					break;
+				}
+			}
+		}
+	}
 }
 
 void UseDebug(void)

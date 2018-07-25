@@ -22,6 +22,7 @@ void BossShot_PlayerCollison(void);
 
 void DrawGameObject(void);
 
+
 // デバッグ用
 void UseDebug(void);
 void DrawDebug(void);

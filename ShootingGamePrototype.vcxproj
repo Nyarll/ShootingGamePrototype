@@ -105,6 +105,7 @@
     <ClCompile Include="Game\MyLibrary\DrawFunction.cpp" />
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Game\PlayScene.cpp" />
+    <ClCompile Include="Game\Result.cpp" />
     <ClCompile Include="Game\SceneManager.cpp" />
     <ClCompile Include="Game\Score.cpp" />
     <ClCompile Include="Libraries\GameLibrary\GameLibGraphics.cpp" />
@@ -130,6 +131,7 @@
     <ClInclude Include="Game\MyLibrary\Struct.h" />
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\PlayScene.h" />
+    <ClInclude Include="Game\Result.h" />
     <ClInclude Include="Game\SceneManager.h" />
     <ClInclude Include="Game\Score.h" />
     <ClInclude Include="Libraries\GameLibrary\GameLib.h" />

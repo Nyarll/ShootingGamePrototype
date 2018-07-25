@@ -1,5 +1,6 @@
 // 多重インクルードの防止
 #pragma once
+#pragma warning (disable:4244)
 
 // ヘッダファイルのインクルード
 #include "Collision.h"

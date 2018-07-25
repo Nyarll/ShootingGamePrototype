@@ -25,8 +25,8 @@
 
 #define GAME_SCREEN_LEFT	(SCREEN_LEFT)
 #define GAME_SCREEN_TOP		(SCREEN_TOP)
-#define GAME_SCREEN_RIGHT	(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 10)	// プレイヤーが動ける範囲 X
-#define GAME_SCREEN_BOTTOM	(SCREEN_HEIGHT)							// プレイヤーが動ける範囲 Y
+#define GAME_SCREEN_RIGHT	(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 10)	// プレイヤーが動ける範囲 X 600
+#define GAME_SCREEN_BOTTOM	(SCREEN_HEIGHT)							// プレイヤーが動ける範囲 Y 800
 #define GAME_SCREEN_CENTER_X (GAME_SCREEN_RIGHT / 2)
 #define GAME_SCREEN_CENTER_Y (GAME_SCREEN_BOTTOM / 2)
 
@@ -46,7 +46,7 @@
 #define ENEMY_TYPE_NUM 1
 
 // ステージごとのエネミーの数
-#define ENEMY_NUM1 (0)
+#define ENEMY_NUM1 (16)
 #define ENEMY_NUM2 (5)
 
 typedef int LIFE;

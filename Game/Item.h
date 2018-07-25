@@ -1,6 +1,6 @@
 #pragma once
 
-#define ITEM_NUM 128
+#define ITEM_NUM 2048
 #define ITEM_TYPE_NUM 4
 #define ITEM_R 16
 

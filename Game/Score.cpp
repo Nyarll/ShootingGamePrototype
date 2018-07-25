@@ -5,9 +5,13 @@
 
 static HGRP score_gh[10];
 static char buf[100];
-static int score;
+int score;
 static int graze_num;
 static int num;
+
+int high_score;
+
+static int powerup_itemnum = 0;
 
 void InitScore(void)
 {
@@ -24,7 +28,14 @@ void DrawScore(void)
 	SetFontSize(20);
 
 	// ハイスコア
-	num = sprintf(buf, "%d", score);
+	if (high_score > score)
+	{
+		num = sprintf(buf, "%d", high_score);
+	}
+	else
+	{
+		num = sprintf(buf, "%d", score);
+	}
 	DrawFormatString(SCORE_X, 15, COLOR_WHITE, "High Score");
 	for (int i = 0; i < num; ++i)
 	{
@@ -47,20 +58,28 @@ void DrawScore(void)
 		DrawGraph(SCORE_X + 20 + i * 19, 155, score_gh[(buf[i] - '0')], TRUE);
 	}
 
-	// 残機
-	num = sprintf(buf, "%d", player_life);
-	DrawFormatString(SCORE_X, 195, COLOR_WHITE, "Life");
+	// power up item num
+	num = sprintf(buf, "%d", powerup_itemnum);
+	DrawFormatString(SCORE_X, 195, COLOR_WHITE, "Power UP items");
 	for (int i = 0; i < num; ++i)
 	{
 		DrawGraph(SCORE_X + 20 + i * 19, 215, score_gh[(buf[i] - '0')], TRUE);
 	}
 
-	// 残ボム
-	num = sprintf(buf, "%d", player_bom);
-	DrawFormatString(SCORE_X, 255, COLOR_WHITE, "Bom");
+	// 残機
+	num = sprintf(buf, "%d", player_life);
+	DrawFormatString(SCORE_X, 255, COLOR_WHITE, "Life");
 	for (int i = 0; i < num; ++i)
 	{
 		DrawGraph(SCORE_X + 20 + i * 19, 275, score_gh[(buf[i] - '0')], TRUE);
+	}
+
+	// 残ボム
+	num = sprintf(buf, "%d", player_bom);
+	DrawFormatString(SCORE_X, 315, COLOR_WHITE, "Bom");
+	for (int i = 0; i < num; ++i)
+	{
+		DrawGraph(SCORE_X + 20 + i * 19, 335, score_gh[(buf[i] - '0')], TRUE);
 	}
 }
 
@@ -68,7 +87,7 @@ void SetEnemyKillScore(void)
 {
 	score += 20;
 }
-void SetItemGet(int index = 1)
+void SetItemGet(int index)
 {
 	switch (index)
 	{
@@ -77,6 +96,7 @@ void SetItemGet(int index = 1)
 		break;
 
 	case 1:	// パワーアップ
+		powerup_itemnum += 10;
 		break;
 
 	case 2:	// ボム
@@ -94,4 +114,9 @@ void SetGrazeScore(void)
 {
 	score += 5;
 	graze_num += 1;
+}
+
+int GetPowerUpItemNum(void)
+{
+	return powerup_itemnum;
 }

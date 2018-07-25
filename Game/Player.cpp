@@ -64,7 +64,7 @@ void InitPlayer(void)
 	player.speed.x = 1;	player.speed.y = 1;
 	player.vel.x = PLAYER_SPEED;	player.vel.y = PLAYER_SPEED;
 
-	player_life = 3;
+	player_life = 5;
 	player_bom = 3;
 
 	shot_power = 1;
@@ -105,6 +105,15 @@ void InitPlayer(void)
 }
 void MovePlayer(void)
 {
+	int power = GetPowerUpItemNum() % 100;
+
+	if (power > 3)
+	{
+		if (shot_power < 4)
+		{
+			shot_power += 1;
+		}
+	}
 
 	player_angle[0].deg++;
 	player_angle[1].deg--;

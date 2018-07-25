@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "PlayScene.h"
+#include "Result.h"
 #include "Defines.h"
 
 // グローバル変数
@@ -20,10 +21,11 @@ void InitScene(void)
 
 	scene_count = 0;
 
-	logo_handle = LoadGraph("Resources/Textures/gunnmaken.png");
+	logo_handle = LoadGraph("Resources/Textures/極東陰陽録.png");
 
 	InitGameCount();
 	InitPlay();
+	InitResult();
 
 	if (next_scene != SCENE_NONE)
 	{
@@ -44,20 +46,12 @@ void UpdateScene(void)
 		if (scene_count > 180)
 		{
 			active_scene = next_scene;
-			next_scene = SCENE_MENU;
+			next_scene = SCENE_PLAY;
 		}
 		scene_count++;
 		break;
 
 	case SCENE_TITLE:
-		if (GetInputKeyData(KEY_INPUT_SPACE) && (!GetInputKeyOldData(KEY_INPUT_SPACE)))
-		{
-			active_scene = next_scene;
-			next_scene = SCENE_PLAY;
-		}
-		break;
-
-	case SCENE_MENU:
 		if (GetInputKeyData(KEY_INPUT_SPACE) && (!GetInputKeyOldData(KEY_INPUT_SPACE)))
 		{
 			active_scene = next_scene;
@@ -70,14 +64,27 @@ void UpdateScene(void)
 		break;
 
 	case SCENE_RESULT:
+		UpdateResult();
+		if (GetInputKeyData(KEY_INPUT_SPACE) && (!GetInputKeyOldData(KEY_INPUT_SPACE)))
+		{
+			active_scene = next_scene;
+			next_scene = SCENE_TITLE;
+		}
 		break;
 	}
 	UpdateKeyOld();
 }
 
+void SetResultScene(void)
+{
+	active_scene = next_scene;
+	next_scene = SCENE_TITLE;
+}
+
 // シーンの描画
 void RenderScene(void)
 {
+	static int cnt = 0;
 	switch (active_scene)
 	{
 	case SCENE_LOGO:
@@ -87,19 +94,25 @@ void RenderScene(void)
 	case SCENE_TITLE:
 		SetDrawBright(255, 255, 255);
 		DrawGraph(0, 0, logo_handle, TRUE);
-		break;
-
-	case SCENE_MENU:
-		SetDrawBright(255, 255, 255);
-		DrawBox(0, 0, 40, 40, COLOR_RED, TRUE);
+		if ((cnt % 80) / 40)
+		{
+			SetFontSize(30);
+			DrawFormatString(SCREEN_CENTER_X - 140, SCREEN_CENTER_Y / 2 * 3, COLOR_RED, "Push to SPACE KEY !");
+		}
+		cnt++;
 		break;
 
 	case SCENE_PLAY:
 		RenderPlay();
+		if (cnt != 0)
+		{
+			cnt = 0;
+		}
 		break;
 
 	case SCENE_RESULT:
-		DrawFormatString(SCREEN_CENTER_X / 2, SCREEN_CENTER_Y / 2, COLOR_WHITE, "リザルト");
+		//DrawFormatString(SCREEN_CENTER_X / 2, SCREEN_CENTER_Y / 2, COLOR_WHITE, "リザルト");
+		RenderResult();
 		break;
 	}
 	

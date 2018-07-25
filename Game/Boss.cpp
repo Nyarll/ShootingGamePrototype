@@ -1,11 +1,10 @@
 #include "Boss.h"
-
-#define DEBUG
+#include "SceneManager.h"
 
 #define BOSS_POS_X (GAME_SCREEN_CENTER_X)
 #define BOSS_POS_Y (GAME_SCREEN_CENTER_Y / 2)
 
-#define MAX_BOSS_HP 400
+#define MAX_BOSS_HP 800
 
 BOSS boss;
 HGRP boss_back;
@@ -39,16 +38,17 @@ void InitBoss(void)
 	boss.move_pattern = 0;
 	boss.shot_pattern = 0;
 
-	boss_intime = 0;	// ボス出現タイミング
+	boss_intime = 8000;	// ボス出現タイミング
 	boss_movecount = 300;
 	boss_moveflag = 0;
 
 	boss.shot_flag = FALSE;
 
 	boss.hp = MAX_BOSS_HP;
-	boss.life = 10;
+	boss.life = 6;
 
 	boss_back = LoadGraph("Resources/Textures/bossback3.png");
+	boss.tex = LoadGraph("Resources/Textures/doraemon.png");
 
 	InputPhy(60);
 
@@ -87,14 +87,8 @@ void MoveBoss(void)
 	{
 		boss.life -= 1;
 		boss.shot_cnt = 0;
-	}
-
-#ifdef DEBUG
-	if (boss.hp <= 0)
-	{
 		boss.hp = MAX_BOSS_HP;
 	}
-#endif
 
 	if (boss.shot_flag)
 	{
@@ -107,10 +101,11 @@ void MoveBossManager(void)
 	switch (boss.move_pattern)
 	{
 	case 0:
+		BossMovePattern1();
 		break;
 
 	case 1:
-		//BossMovePattern1();
+		BossMovePattern1();
 		
 		break;
 	}
@@ -122,28 +117,96 @@ void MoveBossManager(void)
 }
 void ShotBossManager(void)
 {
+	static int bosslife_table = boss.life;
+	static int wait_change = 0;
+
+	static BOOL initmove = FALSE;
+
 	switch (boss.shot_pattern)
 	{
 	case 0:
-		BossShotPattern0();
+		//BossShotPattern1();
+		BossShotPattern0();		// 初手通常
+		//BossSpecialShot1();
 		break;
 
 	case 1:
-		//BossShotPattern1();
-		BossSpecialShot0();
+		BossSpecialShot0();		// サイレントセレナ
+		//BossSpecialShot0();
+		//BossSpecialShot1();
+		//BossSpecialShot2();
+		break;
+
+	case 2:		// 次手通常
+		BossShotCircle1(6.0, 30, 10);
+		BossShotCircle2(3.0, 30, 20);
+		break;
+
+	case 3:
+		BossSpecialShot1();		// パーフェクトフリーズ
+		break;
+
+	case 4:
+		BossShotPattern1();
+		break;
+
+	case 5:
+		BossSpecialShot2();		// 恋の迷路
 		break;
 	}
 	boss.shot_flag = TRUE;
 
-	switch (boss.life)	// ボス残機で行動の変化
+	if (boss.life != bosslife_table)
 	{
-	case 10:
-		boss.shot_pattern = 0;
-		break;
+		if (!initmove)
+		{
+			InputPhy(60);
+			initmove = TRUE;
+		}
+		if (wait_change > 180)	// ちょっと待機する
+		{
+			switch (boss.life)	// ボス残機で行動の変化
+			{
+			case 6:
+				boss.shot_pattern = 0;
+				break;
 
-	case 9:
-		boss.shot_pattern = 1;
-		break;
+			case 5:
+				boss.shot_pattern = 1;
+				break;
+
+			case 4:
+				boss.shot_pattern = 2;
+				break;
+
+			case 3:
+				boss.shot_pattern = 3;
+				break;
+
+			case 2:
+				boss.shot_pattern = 4;
+				break;
+
+			case 1:
+				boss.shot_pattern = 5;
+				break;
+
+			case 0:
+				SetResultScene();
+				break;
+			}
+			
+		}
+		else
+		{
+			wait_change++;
+		}
+	}
+	/*else */if(wait_change > 181)
+	{
+		bosslife_table = boss.life;
+		initmove = FALSE;;
+		wait_change = 0;
 	}
 
 	//
@@ -153,7 +216,8 @@ void DrawBoss(void)
 	if (boss_intime < GetGameCount())
 	{
 		DrawBossEffect();
-		DrawCircle(boss.pos.x, boss.pos.y, BOSS_SIZE, GetColor(128, 0, 255), TRUE);
+		//DrawCircle(boss.pos.x, boss.pos.y, BOSS_SIZE, GetColor(128, 0, 255), TRUE);
+		DrawRotaGraph(boss.pos.x, boss.pos.y, 1.5, 0.0, boss.tex, TRUE);
 		DrawBossShot();
 		DrawBossHP();
 	}

@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define BOSS_SHOT_NUM 2048
+#define BOSS_SHOT_NUM 3072
 
 #define BOSS_SIZE 30
 
@@ -55,6 +55,8 @@ typedef struct
 	double r;
 	double angle;
 
+	short state;
+
 	HGRP tex;
 
 }BOSS_SHOT;
@@ -73,6 +75,8 @@ void DrawBossHP(void);
 BOOL GetBossFlag(void);
 double GetBossPosX(void);
 double GetBossPosY(void);
+
+BOOL GetBossShotFlag(int i);
 
 void DrawBossEffect(void);
 
@@ -99,6 +103,13 @@ int SearchBossShot(void);
 void BossShotPattern0(void);		// 円形ショット
 void BossShotPattern1(void);		// 
 
+void BossShotCircle1(double spd, double deg, int interval);
+void BossShotCircle2(double spd, double deg, int interval);
+
 void BossSpecialShot0(void);
+void BossSpecialShot1(void);
+void BossSpecialShot2(void);
+
+void BossSpecialShotMove1(int i);
 
 double BossPlayerATAN(void);

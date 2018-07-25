@@ -313,7 +313,7 @@ void SetEnemyShotGraph(int e_index, int j)
 		enemy_shot[j].base.sprite.texture = enemy_shot_graph[99];
 		break;
 
-	case 2:
+	case 2:	//	Â
 		enemy_shot[j].base.sprite.texture = enemy_shot_graph[108];
 		break;
 	}
