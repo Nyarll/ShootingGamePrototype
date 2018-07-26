@@ -69,6 +69,9 @@
     <Filter Include="ゲーム\ResultScene">
       <UniqueIdentifier>{01735602-8ad9-43fe-a90e-7c1d25f3e41c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース\EnemyData">
+      <UniqueIdentifier>{d370c135-f72b-46e5-8edd-ceddf31011a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <!-- ソースファイル -->
   <ItemGroup>
@@ -238,5 +241,11 @@
     <Image Include="Resources\Textures\TridentLogo.png">
       <Filter>リソース\テクスチャ</Filter>
     </Image>
+    <None Include="Resources\EnemyData\stage1.csv">
+      <Filter>リソース\EnemyData</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="HighScore.txt" />
   </ItemGroup>
 </Project>

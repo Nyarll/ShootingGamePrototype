@@ -11,8 +11,12 @@ void InitGameCount(void)
 
 void UpdateGameCount(void)
 {
-	GetHitKeyStateAll(keys);
 	game_count++;
+}
+
+void UpdateKey(void)
+{
+	GetHitKeyStateAll(keys);
 }
 
 void UpdateKeyOld(void)

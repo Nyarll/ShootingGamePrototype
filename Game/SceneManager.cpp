@@ -17,7 +17,7 @@ static HGRP logo_handle;
 void InitScene(void)
 {
 	active_scene = SCENE_NONE;
-	next_scene = SCENE_PLAY;
+	next_scene = SCENE_LOGO;
 
 	scene_count = 0;
 
@@ -37,8 +37,8 @@ void InitScene(void)
 // シーンの更新
 void UpdateScene(void)
 {
-	
 	UpdateGameCount();
+	UpdateKey();
 
 	switch (active_scene)
 	{
@@ -67,8 +67,11 @@ void UpdateScene(void)
 		UpdateResult();
 		if (GetInputKeyData(KEY_INPUT_SPACE) && (!GetInputKeyOldData(KEY_INPUT_SPACE)))
 		{
+			InitGameCount();
+			InitPlay();
+			InitResult();
 			active_scene = next_scene;
-			next_scene = SCENE_TITLE;
+			next_scene = SCENE_PLAY;
 		}
 		break;
 	}

@@ -148,6 +148,7 @@
     <!-- 音 -->
     <None Include="Resources\Audio\SE00.ogg" />
     <!-- フォント -->
+    <None Include="Resources\EnemyData\stage1.csv" />
     <None Include="Resources\Fonts\PongScore.dft" />
     <!-- アイコン -->
     <ClInclude Include="Resources\Icon\Icon.h" />
@@ -155,6 +156,9 @@
     <ResourceCompile Include="Resources\Icon\Icon.rc" />
     <!-- テクスチャ -->
     <Image Include="Resources\Textures\TridentLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="HighScore.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

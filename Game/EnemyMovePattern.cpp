@@ -110,3 +110,21 @@ void EnemyMovePattern4(int i)
 		}
 	}
 }
+// ¶ã‚©‚ç‰E‰º‚Ö’¼ü
+void EnemyMovePattern5(int i)
+{
+	if (enemy[i].in_time < GetGameCount())
+	{
+		enemy[i].x += cos(DEG_TO_RAD(45.0)) * 2;
+		enemy[i].y += sin(DEG_TO_RAD(45.0)) * 2;
+	}
+}
+// ‰Eã‚©‚ç¶‰º‚Ö’¼ü
+void EnemyMovePattern6(int i)
+{
+	if (enemy[i].in_time < GetGameCount())
+	{
+		enemy[i].x -= cos(DEG_TO_RAD(45.0)) * 2;
+		enemy[i].y += sin(DEG_TO_RAD(45.0)) * 2;
+	}
+}

@@ -3,6 +3,7 @@
 void InitGameCount(void);
 void UpdateGameCount(void);
 
+void UpdateKey(void);
 void UpdateKeyOld(void);
 
 int GetGameCount(void);

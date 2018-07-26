@@ -38,7 +38,7 @@ void InitBoss(void)
 	boss.move_pattern = 0;
 	boss.shot_pattern = 0;
 
-	boss_intime = 8000;	// ボス出現タイミング
+	boss_intime = 2200;	// ボス出現タイミング / LastEnemy 1820
 	boss_movecount = 300;
 	boss_moveflag = 0;
 

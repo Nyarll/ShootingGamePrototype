@@ -32,6 +32,8 @@ void EnemyMovePattern1(int i);	// 移動パターン1
 void EnemyMovePattern2(int i);	// 移動パターン2
 void EnemyMovePattern3(int i);	// 移動パターン3
 void EnemyMovePattern4(int i);	// 移動パターン4
+void EnemyMovePattern5(int i);
+void EnemyMovePattern6(int i);
 
 void InitEnemyShot(void);	// エネミーの弾の初期化
 void SetEnemyShot(int index);	// エネミーの弾のセット

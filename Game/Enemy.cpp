@@ -212,6 +212,14 @@ void MoveEnemy(void)
 				EnemyMovePattern4(i);
 				break;
 
+			case 5:
+				EnemyMovePattern5(i);
+				break;
+
+			case 6:
+				EnemyMovePattern6(i);
+				break;
+
 			case 999:	// デバッグモード
 				EnemyMovePatternDebug(i);
 				break;

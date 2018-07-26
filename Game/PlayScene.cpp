@@ -70,7 +70,7 @@ void UpdatePlay(void)
 
 	MoveEnemyShot();
 
-	/**
+	/**/
 	PlayerShot_EnemyCollision();
 	EnemyShot_PlayerCollision();
 	GrazeCollision();

@@ -1248,7 +1248,7 @@ void EnemyShotPattern15(int i)
 	int j;
 	static int num = 0;
 	//5‰ñ‚Éˆê‰ñ”­ŽË,20‚Ü‚Å‚È‚Ì‚Å‚T”­
-	if (shot_count[i] % 2 == 0 && shot_count[i] <= 360)
+	if (shot_count[i] % 10 == 0 && shot_count[i] <= 360)
 	{
 		for (j = 0; j < ENEMY_SHOT_NUM; j++)
 		{
