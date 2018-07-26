@@ -157,9 +157,6 @@
     <!-- テクスチャ -->
     <Image Include="Resources\Textures\TridentLogo.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="HighScore.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

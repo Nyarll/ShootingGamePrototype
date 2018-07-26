@@ -245,7 +245,4 @@
       <Filter>リソース\EnemyData</Filter>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="HighScore.txt" />
-  </ItemGroup>
 </Project>
